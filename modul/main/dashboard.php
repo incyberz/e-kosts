@@ -1,3 +1,57 @@
+<?php
+$jumlah_kamar_total = 0;
+$jumlah_kamar_terisi = 0;
+$jumlah_kamar_siap_huni = 0;
+$jumlah_kamar_perbaikan = 0;
+
+$jumlah_terbayar_lunas = 0;
+$jumlah_belum_bayar = 0;
+$jumlah_hampir_jt = 0;
+$jumlah_jt = 0;
+
+$pemasukan_bulan_ini = 0;
+$piutang = 0;
+
+$total_transaksi = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+?>
 <div class="pagetitle">
   <h1>Dashboard</h1>
 </div>

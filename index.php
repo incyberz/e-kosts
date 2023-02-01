@@ -1,5 +1,5 @@
 <?php
-$page_contents = 'dashboard';
+include 'conn.php';
 
 ?>
 <!DOCTYPE html>
@@ -51,7 +51,7 @@ $page_contents = 'dashboard';
   <?php include 'modul/sidebar.php';?>
 
   <main id="main" class="main">
-    <?php include "modul/main/$page_contents.php";?>
+    <?php include 'routing.php';?>
   </main>
 
   <!-- ======= Footer ======= -->
