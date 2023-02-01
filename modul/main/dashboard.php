@@ -1,24 +1,116 @@
 <?php
-$jumlah_kamar_total = 0;
-$jumlah_kamar_terisi = 0;
-$jumlah_kamar_siap_huni = 0;
-$jumlah_kamar_perbaikan = 0;
+$homes = '';
+$durasi_warning = 10;
 
-$jumlah_terbayar_lunas = 0;
-$jumlah_belum_bayar = 0;
-$jumlah_hampir_jt = 0;
-$jumlah_jt = 0;
 
+
+$nominal_lunas = 0;
 $pemasukan_bulan_ini = 0;
 $piutang = 0;
 
 $total_transaksi = 0;
 
 
+$s = "SELECT *,
+(SELECT id_jenis_trx_kunci FROM tb_trx_kunci k JOIN tb_trx_bayar y ON k.id_trx_bayar=y.id WHERE y.id_kamar=a.id order by k.tanggal_trx DESC limit 1) as kunci_dipinjam, 
+(SELECT id FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as last_id_trx_bayar,  
+(SELECT jatuh_tempo FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as jatuh_tempo,  
+(SELECT nominal FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as nominal  
+
+from tb_kamar a ";
+$q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+
+$kamar_ok = 0;
+$kamar_terisi = 0;
+$terbayar = 0;
+$jumlah_jt = 0;
+$jumlah_hampir_jt = 0;
+$kamar_total = 0;
+
+while ($d=mysqli_fetch_assoc($q)) {
+    $fill = '';
+    $warna = 'biru';
+    $dash = 'dash';
+
+    $kamar_total++;
+    if ($d['status_kamar']==1) {
+        $kamar_ok++;
+        $dash = 'exclamation';
+
+        if ($d['kunci_dipinjam']==1) {
+            $kamar_terisi++;
+            $fill='-fill';
+
+            if ($eta<=0) {
+                $jumlah_jt++;
+                $warna = 'merah';
+                $dash = 'exclamation';
+            } elseif ($eta<=$durasi_warning) {
+                $jumlah_hampir_jt++;
+                $warna = 'kuning';
+                $dash = 'exclamation';
+            } else {
+                $terbayar++;
+                $warna = 'hijau';
+                $dash = 'check';
+            }
+        }
+    } else {
+        // rusak
+        $warna = 'merah';
+    }
 
 
 
+    $kamars[$d['id']] = $d;
+    $eta = intval((strtotime($d['jatuh_tempo'])-strtotime('now'))/(60*60*24));
+    $kamars[$d['id']]['eta'] = $eta;
 
+
+    // ilustrasi kamar-kamar
+    $no_kamar = $d['no_kamar']<10 ? '0'.$d['no_kamar'] : $d['no_kamar'];
+    $homes .= "
+        <div class='item-ilustrasi gradasi-$warna'>
+          <a href='?kamar_detail&id=$d[id]'>
+          <i class='bi bi-house-$dash$fill $warna'></i>
+          <div class='item-ket'>
+            $no_kamar
+          </div>
+          </a>
+        </div>
+    ";
+}
+
+$kamar_rusak = $kamar_total - $kamar_ok;
+$kamar_kosong = $kamar_ok - $kamar_terisi;
+
+$periode = date('my');
+$tanggal_awal = '2023-2-1';
+$tanggal_akhir = '2023-3-1';
+$s = "SELECT * from tb_trx_bayar where tanggal_trx >= '$tanggal_awal' and tanggal_trx < '$tanggal_akhir' ";
+$q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+
+$nominal_total = 0;
+$nominal_lunas = 0;
+while ($d=mysqli_fetch_assoc($q)) {
+    $nominal_total += $d['nominal'];
+}
+
+$piutang = $nominal_total - $nominal_lunas;
+
+// echo '<pre>';
+// echo "kamar_total : $kamar_total <br>";
+// echo "kamar_rusak : $kamar_rusak <br>";
+// echo "kamar_ok : $kamar_ok <br>";
+// echo "kamar_terisi : $kamar_terisi <br>";
+// echo "kamar_kosong : $kamar_kosong <br>";
+// echo "<br>";
+// echo "nominal_total : $nominal_total <br>";
+// echo "nominal_lunas : $nominal_lunas <br>";
+// echo "piutang : $piutang <br>";
+// echo '<pre>';
+// echo print_r($kamars);
+// echo '</pre>';
 
 
 
@@ -73,8 +165,9 @@ $total_transaksi = 0;
                   <i class="bi bi-speedometer"></i>
                 </div>
                 <div class="ps-3">
-                  <h6>17 of 20</h6>
-                  <span class="text-success small pt-1 fw-bold">85%</span> <span class="text-muted small pt-2 ps-1">terisi</span>
+                  <h6><?=$kamar_terisi?> of <?=$kamar_total?></h6>
+                  <!-- <span class="text-success small pt-1 fw-bold">85%</span>  -->
+                  <span class="text-muted small pt-2 ps-1">terisi</span>
                 </div>
               </div>
             </div>
@@ -88,10 +181,10 @@ $total_transaksi = 0;
               <h5 class="card-title">Kamar Kosong <span>| Hari ini</span></h5>
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-house-exclamation ungu"></i>
+                  <i class="bi bi-house-exclamation "></i>
                 </div>
                 <div class="ps-3">
-                  <h6>2</h6>
+                  <h6><?=$kamar_kosong?></h6>
                   <span class="text-muted small pt-2 ps-1">siap huni</span>
                 </div>
               </div>
@@ -106,10 +199,10 @@ $total_transaksi = 0;
               <h5 class="card-title">Sedang Perbaikan <span>| Hari ini</span></h5>
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-house-dash-fill merah"></i>
+                  <i class="bi bi-house-dash merah"></i>
                 </div>
                 <div class="ps-3">
-                  <h6>1</h6>
+                  <h6><?=$kamar_rusak?></h6>
                   <span class="text-muted small pt-2 ps-1">kamar</span>
                 </div>
               </div>
@@ -117,58 +210,85 @@ $total_transaksi = 0;
           </div>
         </div>
 
-        <!-- Terbayar -->
-        <div class="col-xxl-4 col-md-4">
-          <div class="card info-card sales-card gradasi-hijau">
-            <div class="card-body">
-              <h5 class="card-title">Terbayar <span>| Bulan ini</span></h5>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-check-circle"></i>
-                </div>
-                <div class="ps-3">
-                  <h6>5 of 17</h6>
-                  <span class="text-success small pt-1 fw-bold">29%</span> <span class="text-muted small pt-2 ps-1">telah lunas</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="col-12">
 
-        <!-- Hampir JT -->
-        <div class="col-xxl-4 col-md-4">
-          <div class="card info-card sales-card gradasi-kuning">
-            <div class="card-body">
-              <h5 class="card-title">Hampir JT <span>| minggu ini</span></h5>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-exclamation-triangle ungu"></i>
+          <div class="card card-primary">
+            <div class="card-header">Dari <?=$kamar_terisi ?> kamar terisi</div>
+            <div class="card-body" style="padding-top:15px">
+              <div class="row">
+                <!-- Terbayar -->
+                <div class="col-xxl-4 col-md-4">
+                  <div class="card info-card sales-card gradasi-hijau">
+                    <div class="card-body">
+                      <h5 class="card-title">Terbayar <span>| Bulan ini</span></h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-house-check-fill hijau"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6><?=$terbayar ?></h6>
+                          <!-- <span class="text-success small pt-1 fw-bold">29%</span>  -->
+                          <span class="text-muted small pt-2 ps-1">telah lunas</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="ps-3">
-                  <h6>9 of 17</h6>
-                  <span class="text-success small pt-1 fw-bold">53%</span> <span class="text-muted small pt-2 ps-1">belum bayar</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Jatuh Tempo -->
-        <div class="col-xxl-4 col-md-4">
-          <div class="card info-card sales-card gradasi-merah">
-            <div class="card-body">
-              <h5 class="card-title">Jatuh Tempo <span>| Bulan ini</span></h5>
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-dash-circle-fill merah"></i>
+                <!-- Hampir JT -->
+                <div class="col-xxl-4 col-md-4">
+                  <div class="card info-card sales-card gradasi-kuning">
+                    <div class="card-body">
+                      <h5 class="card-title">Hampir JT <span>| <?=$durasi_warning ?> hari lagi</span></h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-house-exclamation-fill kuning"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6><?=$jumlah_hampir_jt ?></h6>
+                          <!-- <span class="text-success small pt-1 fw-bold">53%</span>  -->
+                          <span class="text-muted small pt-2 ps-1">belum perpanjangan</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="ps-3">
-                  <h6>3 of 17</h6>
-                  <span class="text-success small pt-1 fw-bold">18%</span> <span class="text-muted small pt-2 ps-1">nunggak</span>
-                </div>
+
+                <!-- Jatuh Tempo -->
+                <div class="col-xxl-4 col-md-4">
+                  <div class="card info-card sales-card gradasi-merah">
+                    <div class="card-body">
+                      <h5 class="card-title">Jatuh Tempo <span>| Bulan ini</span></h5>
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-house-exclamation-fill merah"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6><?=$jumlah_jt ?></h6>
+                          <!-- <span class="text-success small pt-1 fw-bold">18%</span>  -->
+                          <span class="text-muted small pt-2 ps-1">nunggak</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>            
               </div>
+
+              <!-- ilustrasi -->
+              <style>
+                .ilustrasi{display:flex; flex-wrap:wrap}
+                .item-ilustrasi{ border-radius:50%; height:70px; width:70px; font-size:40px; text-align:center; margin-right:10px; margin-bottom:10px; transition:.2s}
+                .item-ilustrasi:hover{font-size:45px}
+                .item-ket{font-size:12px; margin-top:-10px}
+              </style>
+              <div class="ilustrasi">
+                <?=$homes?>
+              </div>
+              
             </div>
           </div>
+
+
         </div>
 
         <!-- Revenue Card -->

@@ -1,7 +1,7 @@
 <style>
   .merah{color:red}
   .hijau{color:green}
-  .kuning{color:yellow}
+  .kuning{color:orange}
   .biru{color:blue}
   .ungu{color:purple}
   .gradasi-biru{
