@@ -8,9 +8,9 @@ if ($_SERVER['SERVER_NAME'] == "localhost") {
 
 if ($online_version) {
     $db_server = "localhost";
-    $db_user = "darmasiswaikmiac_admin";
-    $db_pass = "IKMIdarmasiswa2023";
-    $db_name = "darmasiswaikmiac_darmasiswa";
+    $db_user = "qwab7246_admekost";
+    $db_pass = "EkostCepLukman2023";
+    $db_name = "qwab7246_ekost";
 } else {
     $db_server = "localhost";
     $db_user = "root";
