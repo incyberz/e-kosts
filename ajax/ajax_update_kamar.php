@@ -1,5 +1,6 @@
 <?php
 include '../conn.php';
+include 'session_security.php';
 
 $id = isset($_GET['id']) ? $_GET['id'] : die(erid('id'));
 $kolom = isset($_GET['kolom']) ? $_GET['kolom'] : die(erid('kolom'));
