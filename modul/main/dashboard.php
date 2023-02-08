@@ -1,6 +1,5 @@
 <?php
 $homes = '';
-$durasi_warning = 10;
 
 
 
@@ -17,7 +16,7 @@ $s = "SELECT *,
 (SELECT jatuh_tempo FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as jatuh_tempo,  
 (SELECT nominal FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as nominal  
 
-from tb_kamar a ";
+from tb_kamar a order by no_kamar";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
 
 $kamar_ok = 0;
@@ -32,8 +31,14 @@ while ($d=mysqli_fetch_assoc($q)) {
     $warna = 'biru';
     $dash = 'dash';
 
+
+
+    // $eta = intval((strtotime($jatuh_tempo)-strtotime('today'))/(60*60*24));
+    $eta = intval((strtotime($d['jatuh_tempo'])-strtotime('today'))/(60*60*24));
+
+
     $kamar_total++;
-    if ($d['status_kamar']==1) {
+    if ($d['kondisi']==1) {
         $kamar_ok++;
         $dash = 'exclamation';
 
@@ -63,8 +68,7 @@ while ($d=mysqli_fetch_assoc($q)) {
 
 
     $kamars[$d['id']] = $d;
-    $eta = intval((strtotime($d['jatuh_tempo'])-strtotime('now'))/(60*60*24));
-    $kamars[$d['id']]['eta'] = $eta;
+    // $kamars[$d['id']]['eta'] = $eta;
 
 
     // ilustrasi kamar-kamar
@@ -84,19 +88,16 @@ while ($d=mysqli_fetch_assoc($q)) {
 $kamar_rusak = $kamar_total - $kamar_ok;
 $kamar_kosong = $kamar_ok - $kamar_terisi;
 
+
+// pendapatan
 $periode = date('my');
-$tanggal_awal = '2023-2-1';
-$tanggal_akhir = '2023-3-1';
-$s = "SELECT * from tb_trx_bayar where tanggal_trx >= '$tanggal_awal' and tanggal_trx < '$tanggal_akhir' ";
+$tanggal_awal = '2023-2-1'; //zzz debug
+$tanggal_akhir = '2023-3-1'; //zzz debug
+$s = "SELECT sum(nominal) as pendapatan_bulan_ini from tb_trx_bayar where tanggal_trx >= '$tanggal_awal' and tanggal_trx < '$tanggal_akhir' ";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+$d = mysqli_fetch_assoc($q);
+$pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];
 
-$nominal_total = 0;
-$nominal_lunas = 0;
-while ($d=mysqli_fetch_assoc($q)) {
-    $nominal_total += $d['nominal'];
-}
-
-$piutang = $nominal_total - $nominal_lunas;
 
 // echo '<pre>';
 // echo "kamar_total : $kamar_total <br>";
@@ -155,11 +156,12 @@ $piutang = $nominal_total - $nominal_lunas;
     <div class="col-lg-12">
       <div class="row">
 
-        <!-- Status Kamar -->
+        <!-- Terisi -->
         <div class="col-xxl-4 col-md-4">
           <div class="card info-card sales-card gradasi-hijau">
             <div class="card-body">
-              <h5 class="card-title">Status Kamar <span>| Hari ini</span></h5>
+              <a href="?master_kamar">
+              <h5 class="card-title">Terisi <span>| Hari ini</span></h5>
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                   <i class="bi bi-speedometer"></i>
@@ -170,6 +172,7 @@ $piutang = $nominal_total - $nominal_lunas;
                   <span class="text-muted small pt-2 ps-1">terisi</span>
                 </div>
               </div>
+              </a>
             </div>
           </div>
         </div>
@@ -303,7 +306,7 @@ $piutang = $nominal_total - $nominal_lunas;
                   <i class="bi bi-currency-dollar"></i>
                 </div>
                 <div class="ps-3">
-                  <h6>Rp 8.550.000</h6>
+                  <h6>Rp <?=number_format($pendapatan_bulan_ini, 0) ?></h6>
                   <span class="text-muted small pt-2 ps-1">piutang: </span> <span class="text-success small pt-1 fw-bold">Rp 24.780.000</span>
 
                 </div>

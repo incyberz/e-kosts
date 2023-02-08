@@ -3,7 +3,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link " href="index.html">
+      <a class="nav-link " href="?">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -15,25 +15,25 @@
       </a>
       <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#components-alerts.html">
+          <a href="?master_kamar">
             <i class="bi bi-circle"></i><span>Data Kamar</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a href="#components-alerts.html">
             <i class="bi bi-circle"></i><span>Data Sarana Kamar</span>
           </a>
-        </li>
+        </li> -->
         <li>
-          <a href="#components-accordion.html">
+          <a href="?master_penyewa">
             <i class="bi bi-circle"></i><span>Data Penyewa</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a href="#components-badges.html">
             <i class="bi bi-circle"></i><span>Data User</span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </li>
 

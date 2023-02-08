@@ -1,5 +1,16 @@
 <?php
 include 'conn.php';
+$durasi_warning = 10;
+$link_upload = 'https://qwars.online/ekost/upload';
+$nomor_pa_cep = '6281318316793';
+
+function format_tanggal($d, $j)
+{
+    $m = intval(date('m', strtotime($d)));
+    $nama_bulan = ['Januari', 'Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $jam = $j ? ' '.date('H:i', strtotime($d)) : '';
+    return date('d', strtotime($d)).' '.$nama_bulan[$m-1].' '.date('Y', strtotime($d)).$jam;
+}
 
 ?>
 <!DOCTYPE html>
@@ -32,6 +43,7 @@ include 'conn.php';
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+  <script src="assets/js/jquery.min.js"></script>
 
   <!-- =======================================================
   * Template Name: NiceAdmin - v2.5.0
