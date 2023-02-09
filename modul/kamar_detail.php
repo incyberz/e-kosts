@@ -146,7 +146,7 @@ if ($d['kondisi']==1) {
         <div class='mb-2'><a href='#' class='btn btn-primary btn-sm btn-block'>Perpanjang Sewa</a></div>
         <div class='mb-2'><a href='#' class='btn btn-warning btn-sm btn-block'>Minta Kunci</a></div>
         <div class='mb-2'>
-          <a href='?whatsapp&type=$primary&pesan=$pesan' class='btn btn-$primary btn-sm btn-block'>$whatsapp</a>
+          <a href='?whatsapp&id_trx=$id_trx&type=$primary&pesan=$pesan' class='btn btn-$primary btn-sm btn-block'>$whatsapp</a>
           <div>Last Notif: $last_notif_show</div>
         </div>
         ";
