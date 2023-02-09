@@ -1,5 +1,15 @@
 <?php
 $id = isset($_GET['id']) ? $_GET['id'] : die('<script>location.replace("?master_kamar")</script>');
+
+$info_type = isset($_GET['info_type']) ? $_GET['info_type'] : ''; //from perpanjangan sewa
+$info_text = isset($_GET['info_text']) ? $_GET['info_text'] : ''; //from perpanjangan sewa
+
+if ($info_type!='') {
+    die("
+    <div class='alert alert-$info_type' id=info>$info_text<hr><a href='?kamar_detail&id=$id' class='btn btn-primary'>Close</a></div>
+    ");
+}
+
 $aksi_kamar = '';
 
 $s = "SELECT *,
@@ -143,8 +153,8 @@ if ($d['kondisi']==1) {
 
 
         $aksi_kamar = "
-        <div class='mb-2'><a href='#' class='btn btn-primary btn-sm btn-block'>Perpanjang Sewa</a></div>
-        <div class='mb-2'><a href='#' class='btn btn-warning btn-sm btn-block'>Minta Kunci</a></div>
+        <div class='mb-2'><a href='?trx&id_trx=$id_trx&id_jenis_trx=2' class='btn btn-primary btn-sm btn-block'>Perpanjang Sewa</a></div>
+        <div class='mb-2'><a href='?trx_kunci&id_trx_bayar=$id_trx&id_jenis_trx_kunci=$kunci_dipinjam' class='btn btn-warning btn-sm btn-block'>Minta Kunci</a></div>
         <div class='mb-2'>
           <a href='?whatsapp&id_trx=$id_trx&type=$primary&pesan=$pesan' class='btn btn-$primary btn-sm btn-block'>$whatsapp</a>
           <div>Last Notif: $last_notif_show</div>
@@ -153,7 +163,7 @@ if ($d['kondisi']==1) {
     } else {
         // tidak disewakan
         $aksi_kamar = "
-        <div class='mb-2'><a href='#' class='btn btn-primary btn-sm btn-block'>Sewakan</a></div>
+        <div class='mb-2'><a href='?trx&id_trx=0' class='btn btn-primary btn-sm btn-block'>Sewakan</a></div>
         ";
     }
 } else {

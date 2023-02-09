@@ -1,4 +1,5 @@
 <?php
+$dm=0;
 include 'conn.php';
 $durasi_warning = 10;
 $link_upload = 'https://qwars.online/ekost/upload';

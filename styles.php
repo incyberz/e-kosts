@@ -1,5 +1,7 @@
 <style>
-  .debug{background:red; font-family: consolas; font-size: small; padding:10px}
+  .debug{background:red; font-family: consolas; font-size: small; padding:10px; <?php if (!$dm) {
+      echo 'display:none;';
+  } ?>}
 
   .merah{color:red}
   .hijau{color:green}
@@ -24,5 +26,11 @@
   }
 
   .btn-block { width:100%}
+  .wadah{
+    border: solid 1px #ccc;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+  }
 
 </style>
