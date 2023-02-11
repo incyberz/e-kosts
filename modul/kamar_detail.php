@@ -13,10 +13,18 @@ if ($info_type!='') {
 $aksi_kamar = '';
 
 $s = "SELECT *,
-(SELECT concat(k.id,';',id_jenis_trx_kunci,';',k.tanggal_trx,';',keterangan) FROM tb_trx_kunci k JOIN tb_trx_bayar y ON k.id_trx_bayar=y.id WHERE y.id_kamar=a.id order by k.tanggal_trx DESC limit 1) as trx_kunci, 
-(SELECT concat(id,';',jatuh_tempo,';',nominal,';',tanggal_trx,';',dibayar_oleh) FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as trx,  
-(SELECT concat(id_penyewa,';',nama_penyewa,';',no_ktp) FROM tb_trx_bayar b JOIN tb_penyewa p ON b.id_penyewa=p.id WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as penyewa,  
-(SELECT last_notif FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as last_notif  
+(SELECT concat(
+  id,';',
+  jatuh_tempo,';',
+  nominal,';',
+  tanggal_trx,';',
+  dibayar_oleh,';',
+  kunci_dipinjam) 
+  FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as trx,  
+(SELECT tanggal_kembali_kunci FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as tanggal_kembali_kunci,  
+(SELECT keterangan_trx_kunci FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as keterangan_trx_kunci,  
+(SELECT concat(id_penyewa,';',nama_penyewa,';',no_ktp) FROM tb_trx b JOIN tb_penyewa p ON b.id_penyewa=p.id WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as penyewa,  
+(SELECT last_notif FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as last_notif  
 
 from tb_kamar a where a.id=$id";
 // die($s);
@@ -29,70 +37,122 @@ $warna = 'biru';
 $dash = 'dash';
 $is_terisi = 'Kosong';
 $kondisi_text = 'Rusak';
-$status_kunci = 'Ada';
 $jatuh_tempo_ket = '-';
 $kunci_dipinjam = 0;
 
-$rpenyewa = explode(';', $d['penyewa']);
-$id_penyewa = $rpenyewa[0];
-$nama_penyewa = $rpenyewa[1];
 
-$rtrx = explode(';', $d['trx']);
-$id_trx = $rtrx[0];
-$jatuh_tempo = $rtrx[1];
-$nominal = $rtrx[2];
-$tanggal_trx_bayar = $rtrx[3];
-$dibayar_oleh = $rtrx[4];
-
-$nominal_rp = frp($nominal);
-
-$id_trx_show = $id_trx<1000 ? "0$id_trx" : $id_trx;
-$id_trx_show = $id_trx<100 ? "00$id_trx" : $id_trx_show;
-$id_trx_show = $id_trx<10 ? "000$id_trx" : $id_trx_show;
-
-
-if ($d['trx_kunci']!='') {
-    $rtrx_kunci = explode(';', $d['trx_kunci']);
-    $id_trx_kunci = $rtrx_kunci[0];
-    $kunci_dipinjam = $rtrx_kunci[1];
-    $tanggal_trx_kunci =  format_tanggal($rtrx_kunci[2], 1);
-    $keterangan_trx_kunci = $rtrx_kunci[3];
-} else {
-    $id_trx_kunci = 0;
-    $kunci_dipinjam = 0;
-    $tanggal_trx_kunci = '-';
-    $keterangan_trx_kunci = 'Kunci belum pernah dipinjam.';
-}
-
-
-$eta = intval((strtotime($jatuh_tempo)-strtotime('today'))/(60*60*24));
-$eta_negatif = -$eta;
-
-echo "<div class='debug'>
-penyewa: $d[penyewa]<br>
-trx: $d[trx]<br>
-trx_kunci: $d[trx_kunci]<br>
-<br>
-</div>
-";
-
-if ($d['last_notif']=='') {
-    $last_notif_show =  '<i class=abu>(none)</i>' ;
-} else {
-    $selisih = strtotime('now') - strtotime($d['last_notif']);
-    if ($selisih> 60*60*24) {
-        $last_notif_show =  intval($selisih/(60*60*24)) . ' hari yang lalu' ;
-    } elseif ($selisih> 60*60) {
-        $last_notif_show =  intval($selisih/(60*60)) . ' jam yang lalu' ;
-    } elseif ($selisih> 60) {
-        $last_notif_show =  intval($selisih/60) . ' menit yang lalu' ;
-    } else {
-        $last_notif_show =  "$selisih detik yang lalu" ;
-    }
-}
+$tanggal_kembali_kunci =  format_tanggal($d['tanggal_kembali_kunci'], 1);
+$keterangan_trx_kunci = $d['keterangan_trx_kunci']=='' ? '-' : $d['keterangan_trx_kunci'];
 
 $no_kamar = $d['no_kamar']<10 ? '0'.$d['no_kamar'] : $d['no_kamar'];
 $d['deskripsi'] = $d['deskripsi']=='' ? '-' : $d['deskripsi'];
+
+if ($d['penyewa'] != '') {
+    $rpenyewa = explode(';', $d['penyewa']);
+    $id_penyewa = $rpenyewa[0];
+    $nama_penyewa = $rpenyewa[1];
+    $nama_penyewa_link = "<a href='?penyewa&id=$id_penyewa'>$nama_penyewa</a>";
+}
+
+if ($d['trx'] != '') {
+    $rtrx = explode(';', $d['trx']);
+    $id_trx = $rtrx[0];
+    $jatuh_tempo = $rtrx[1];
+    $nominal = $rtrx[2];
+    $tanggal_trx_bayar = $rtrx[3];
+    $dibayar_oleh = $rtrx[4];
+    $kunci_dipinjam = $rtrx[5];
+
+    $status_kunci = $kunci_dipinjam ? "Dipinjam oleh $nama_penyewa_link" : 'Ada';
+    $nominal_rp = frp($nominal);
+
+    $id_trx_show = $id_trx<1000 ? "0$id_trx" : $id_trx;
+    $id_trx_show = $id_trx<100 ? "00$id_trx" : $id_trx_show;
+    $id_trx_show = $id_trx<10 ? "000$id_trx" : $id_trx_show;
+
+
+    $eta = intval((strtotime($jatuh_tempo)-strtotime('today'))/(60*60*24));
+    $eta_negatif = -$eta;
+
+    // $warna = 'merah';
+    if ($eta>$durasi_warning) {
+        // $warna = 'hijau';
+        $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (masih $eta hari lagi)";
+    } elseif ($eta>0) {
+        // $warna = 'kuning';
+        $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (<b>tinggal $eta hari lagi</b>)";
+    } elseif ($eta==0) {
+        $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (<b class=merah>hari ini</b>)";
+    } else {
+        $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (<b class=merah>nunggak selama ".($eta*-1)." hari</b>)";
+    }
+
+
+    echo "<div class='debug'>
+    penyewa: $d[penyewa]<br>
+    trx: $d[trx]<br>
+    <br>
+    </div>
+    ";
+
+    if ($d['last_notif']=='') {
+        $last_notif_show =  '<i class=abu>(none)</i>' ;
+    } else {
+        $selisih = strtotime('now') - strtotime($d['last_notif']);
+        if ($selisih> 60*60*24) {
+            $last_notif_show =  intval($selisih/(60*60*24)) . ' hari yang lalu' ;
+        } elseif ($selisih> 60*60) {
+            $last_notif_show =  intval($selisih/(60*60)) . ' jam yang lalu' ;
+        } elseif ($selisih> 60) {
+            $last_notif_show =  intval($selisih/60) . ' menit yang lalu' ;
+        } else {
+            $last_notif_show =  "$selisih detik yang lalu" ;
+        }
+    }
+
+    $last_trx = "
+    <div class='judul-tabel'>Pembayaran Terakhir</div>
+    <table class='table tabel-data'>
+      <tr><td width=30%>Trx-id</td><td>$id_trx_show</td></tr>
+      <tr><td>Tanggal Trx</td><td>".format_tanggal($tanggal_trx_bayar, 1)."</td></tr>
+      <tr><td>Nominal</td><td>".number_format($nominal)."</td></tr>
+      <tr><td>Dibayar oleh</td><td>$dibayar_oleh</td></tr>
+      <tr><td>Atas nama</td><td>$nama_penyewa_link</td></tr>
+      <tr><td>Jatuh Tempo</td><td class='gradasi-$warna'>$jatuh_tempo_text</td></tr>
+      <tr><td>&nbsp;</td><td><a href='?trx_history&id_kamar=$d[id]'>Lihat History Pembayaran kamar ini</a></td></tr>
+    </table>
+    ";
+
+
+    $tanggal_penyerahan = $kunci_dipinjam==1 ? $tanggal_trx_bayar : $tanggal_kembali_kunci;
+    $tanggal_penyerahan = format_tanggal($tanggal_penyerahan, 1);
+
+    $last_trx_kunci = "
+<div class='judul-tabel'>Serah Terima Terakhir Kunci</div>
+<table class='table tabel-data'>
+  <tr><td width=30%>Tanggal Penyerahan</td><td>$tanggal_penyerahan</td></tr>
+  <tr><td>Status Kunci</td><td>$status_kunci</td></tr>
+  <tr><td>Keterangan</td><td>$keterangan_trx_kunci</td></tr>
+</table>
+";
+} else {
+    $last_trx = "
+    <div class='judul-tabel'>Pembayaran Terakhir</div>
+    <table class='table tabel-data'>
+      <tr><td class=merah>Belum ada Data Transaksi</td></tr>
+    </table>
+    ";
+    $last_trx_kunci = "
+    <div class='judul-tabel'>Serah Terima Terakhir Kunci</div>
+    <table class='table tabel-data'>
+      <tr><td class=merah>Belum ada Penyerahan Kunci</td></tr>
+    </table>
+    ";
+}
+
+
+
+
 
 if ($d['kondisi']==1) {
     $dash = 'exclamation';
@@ -154,7 +214,7 @@ if ($d['kondisi']==1) {
 
         $aksi_kamar = "
         <div class='mb-2'><a href='?trx&id_trx=$id_trx&id_jenis_trx=2' class='btn btn-primary btn-sm btn-block'>Perpanjang Sewa</a></div>
-        <div class='mb-2'><a href='?trx_kunci&id_trx_bayar=$id_trx&id_jenis_trx_kunci=$kunci_dipinjam' class='btn btn-warning btn-sm btn-block'>Minta Kunci</a></div>
+        <div class='mb-2'><a href='?trx&id_trx=-$id_trx' class='btn btn-warning btn-sm btn-block'>Ambil Kunci</a></div>
         <div class='mb-2'>
           <a href='?whatsapp&id_trx=$id_trx&type=$primary&pesan=$pesan' class='btn btn-$primary btn-sm btn-block'>$whatsapp</a>
           <div>Last Notif: $last_notif_show</div>
@@ -163,7 +223,7 @@ if ($d['kondisi']==1) {
     } else {
         // tidak disewakan
         $aksi_kamar = "
-        <div class='mb-2'><a href='?trx&id_trx=0' class='btn btn-primary btn-sm btn-block'>Sewakan</a></div>
+        <div class='mb-2'><a href='?trx&id_trx=0&id_kamar=$d[id]' class='btn btn-primary btn-sm btn-block'>Sewakan</a></div>
         ";
     }
 } else {
@@ -217,42 +277,10 @@ $tbkamar = "
 ";
 
 
-// $warna = 'merah';
-if ($eta>$durasi_warning) {
-    // $warna = 'hijau';
-    $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (masih $eta hari lagi)";
-} elseif ($eta>0) {
-    // $warna = 'kuning';
-    $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (<b>tinggal $eta hari lagi</b>)";
-} elseif ($eta==0) {
-    $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (<b class=merah>hari ini</b>)";
-} else {
-    $jatuh_tempo_text =  format_tanggal($jatuh_tempo, 0)." (<b class=merah>nunggak selama ".($eta*-1)." hari</b>)";
-}
 
 
-$last_trx = "
-<div class='judul-tabel'>Pembayaran Terakhir</div>
-<table class='table tabel-data'>
-  <tr><td width=30%>Trx-id</td><td>$id_trx_show</td></tr>
-  <tr><td>Tanggal Trx</td><td>".format_tanggal($tanggal_trx_bayar, 1)."</td></tr>
-  <tr><td>Nominal</td><td>".number_format($nominal)."</td></tr>
-  <tr><td>Dibayar oleh</td><td>$dibayar_oleh</td></tr>
-  <tr><td>Atas nama</td><td>$nama_penyewa</td></tr>
-  <tr><td>Jatuh Tempo</td><td class='gradasi-$warna'>$jatuh_tempo_text</td></tr>
-  <tr><td>&nbsp;</td><td><a href='?history_trx&id=$d[id]'>Lihat History Pembayaran kamar ini</a></td></tr>
-</table>
-";
 
 
-$last_trx_kunci = "
-<div class='judul-tabel'>Serah Terima Terakhir Kunci</div>
-<table class='table tabel-data'>
-  <tr><td width=30%>Tanggal Penyerahan</td><td>$tanggal_trx_kunci</td></tr>
-  <tr><td>Status Kunci</td><td>$status_kunci</td></tr>
-  <tr><td>Keterangan</td><td>$keterangan_trx_kunci</td></tr>
-</table>
-";
 
 
 

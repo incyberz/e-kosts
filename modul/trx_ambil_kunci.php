@@ -1,4 +1,5 @@
 <?php
+$id_trx = -$id_trx;
 // perpanjang sewa
 $s = "SELECT * 
 FROM tb_trx a 
@@ -27,9 +28,7 @@ $tanggal_trx_bayar = $d['tanggal_trx'];
 $dibayar_oleh = $d['dibayar_oleh'];
 $id_kamar = $d['id_kamar'];
 $nama_kamar = $d['nama_kamar'];
-
 $nama_penyewa_link = "<a href=?penyewa&id=$d[id_penyewa]>$d[nama_penyewa]</a>";
-
 
 $kunci_dipinjam = $d['kunci_dipinjam'];
 $tanggal_kembali_kunci = format_tanggal($d['tanggal_kembali_kunci'], 1);
@@ -63,32 +62,9 @@ $last_trx = "
 </table>
 ";
 
-$jt_tgl = intval(date('d', strtotime($jatuh_tempo)));
-$jt_bln = intval(date('m', strtotime($jatuh_tempo)));
-$jt_thn = intval(date('Y', strtotime($jatuh_tempo)));
 
-if ($jt_bln==12) {
-    $jt_bln = 1;
-    $jt_thn++;
-} else {
-    $jt_bln++;
-}
-$jatuh_tempo_baru = "$jt_thn-$jt_bln-$jt_tgl";
-$jatuh_tempo_baru_show = format_tanggal($jatuh_tempo_baru, 0);
-
-$jt_bln = $jt_bln<10 ? "0$jt_bln" : $jt_bln;
-$jt_thn = substr($jt_thn, 2, 2);
-$periode = "$jt_bln$jt_thn";
-
-$bayar_via_select = "
-<select class='form-control' name=bayar_via>
-  <option value=t>Transfer</option>
-  <option value=c>Cash</option>
-</select>
-";
-
-$new_trx = "
-<div class='judul-tabel mb-2'>Perpanjangan Sewa</div>
+$trx_kunci = "
+<div class='judul-tabel mb-2'>Trx Ambil Kunci</div>
 <form method=post>
 <table class='table tabel-data'>
   <tr><td width=30%>Tanggal Trx</td><td><i class=abu>(saat ini)</i></td></tr>
@@ -96,16 +72,14 @@ $new_trx = "
   <tr class=debug><td>id_penyewa</td><td><input name=id_penyewa value=$d[id_penyewa]></td></tr>
   <tr class=debug><td>id_trx_sebelumnya</td><td><input name=id_trx_sebelumnya value=$id_trx></td></tr>
   <tr class=debug><td>id_jenis_trx</td><td><input name=id_jenis_trx value=2></td></tr>
-  <tr><td>Nominal</td><td><input class='form-control' name=nominal value='$nominal' minlength=6 maxlength=7 required><small>Tarif Kamar: $d[tarif]</small></td></tr>
-  <tr><td>Dibayar oleh</td><td><input class='form-control' name=dibayar_oleh value='$d[nama_penyewa]' minlength=3 maxlength=50 required><small>Atas nama: $d[nama_penyewa]</small></td></tr>
-  <tr><td>Periode</td><td><input class='form-control' name=periode value='$periode' minlength=4 maxlength=4 required><small>Format: MMYY</small></td></tr>
-  <tr><td>Untuk Kamar</td><td><a href='?kamar_detail&id=$id_kamar'>$nama_kamar</a></td></tr>
-  <tr><td>Jatuh Tempo Baru</td><td class='gradasi-hijau'>$jatuh_tempo_baru_show</td></tr>
-  <tr class=debug><td>Jatuh Tempo Baru</td><td><input name=jatuh_tempo value=$jatuh_tempo_baru></td></tr>
-  <tr><td>Bayar via</td><td>$bayar_via_select</td></tr>
+  <tr><td>Dari Kamar</td><td><a href='?kamar_detail&id=$id_kamar'>$nama_kamar</a></td></tr>
+  <tr><td>Atas nama</td><td>$nama_penyewa_link</td></tr>
+  <tr><td>Alasan Pengambilan</td><td>
+  <textarea class='form-control' name=keterangan_trx_kunci minlength=6 required>Telah jatuh tempo.</textarea>
+  <small>Jatuh Tempo: $jatuh_tempo_show</small></td></tr>
 </table>
-<div class='mb-2'><input type=checkbox id=cek> <label for=cek>Saya sudah menerima Bukti Transfer / Uang Cash untuk pembayaran sewa diatas</label></div>
-<button class='btn btn-primary btn-block' name=btn_perpanjang_sewa id=btn_perpanjang_sewa disabled>Perpanjang Sewa</button>
+<div class='mb-2'><input type=checkbox id=cek> <label for=cek>Kunci kamar ini sudah ada di tangan saya</label></div>
+<button class='btn btn-primary btn-block' name=btn_ambil_kunci id=btn_ambil_kunci disabled>Simpan</button>
 </form>
 ";
 
@@ -157,7 +131,7 @@ $last_trx_kunci = "
 ?>
 
 <div class="pagetitle">
-  <h1>Perpanjangan Sewa</h1>
+  <h1>Ambil Kunci</h1>
 </div>
 
 <section class="section dashboard">
@@ -179,7 +153,7 @@ $last_trx_kunci = "
     </div>
     <div class="col-lg-6">
       <div class="wadah gradasi-biru">
-      <?=$new_trx?>
+      <?=$trx_kunci?>
       </div>
     </div>
   </div>
@@ -217,7 +191,7 @@ $last_trx_kunci = "
     $("#cek").click(function(){
       let c = $(this).prop('checked');
       // alert(c)
-      $("#btn_perpanjang_sewa").prop("disabled",!c);
+      $("#btn_ambil_kunci").prop("disabled",!c);
 
     });
   })

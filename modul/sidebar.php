@@ -37,7 +37,7 @@
       </ul>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-journal-text"></i><span>Transaksi</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -63,9 +63,9 @@
           </a>
         </li>
       </ul>
-    </li>
+    </li> -->
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-layout-text-window-reverse"></i><span>Laporan</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -81,9 +81,9 @@
           </a>
         </li>
       </ul>
-    </li><!-- End Tables Nav -->
+    </li>End Tables Nav -->
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-bar-chart"></i><span>Infograf</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -99,7 +99,7 @@
           </a>
         </li>
       </ul>
-    </li>
+    </li> -->
 
     <li class="nav-item">
       <a class="nav-link collapsed" href="pages-login.html">

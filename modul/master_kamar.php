@@ -11,9 +11,9 @@ $jumlah_hampir_jt=0;
 
 
 $s = "SELECT *,
-(SELECT id_jenis_trx_kunci FROM tb_trx_kunci k JOIN tb_trx_bayar y ON k.id_trx_bayar=y.id WHERE y.id_kamar=a.id order by k.tanggal_trx DESC limit 1) as kunci_dipinjam, 
-(SELECT concat(id,';',jatuh_tempo,';',nominal) FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as trx,  
-(SELECT concat(id_penyewa,';',nama_penyewa) FROM tb_trx_bayar b JOIN tb_penyewa p ON b.id_penyewa=p.id WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as penyewa  
+(SELECT kunci_dipinjam FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as kunci_dipinjam, 
+(SELECT concat(id,';',jatuh_tempo,';',nominal) FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as trx,  
+(SELECT concat(id_penyewa,';',nama_penyewa) FROM tb_trx b JOIN tb_penyewa p ON b.id_penyewa=p.id WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as penyewa  
 
 from tb_kamar a ";
 // die($s);
@@ -32,11 +32,11 @@ $tbhomes = '<table class="table">
 
 
 while ($d=mysqli_fetch_assoc($q)) {
-    echo "<div class='debug'>
-    trx: $d[trx]<br>
-    penyewa: $d[penyewa]<br>
-    </div>
-    ";
+    // echo "<div class='debug'>
+    // trx: $d[trx]<br>
+    // penyewa: $d[penyewa]<br>
+    // </div>
+    // ";
 
     $fill = '';
     $warna = 'biru';
@@ -135,46 +135,6 @@ $kamar_rusak = $kamar_total - $kamar_ok;
 $kamar_kosong = $kamar_ok - $kamar_terisi;
 
 
-// pendapatan
-// $periode = date('my');
-// $tanggal_awal = '2023-2-1'; //zzz debug
-// $tanggal_akhir = '2023-3-1'; //zzz debug
-// $s = "SELECT sum(nominal) as pendapatan_bulan_ini from tb_trx_bayar where tanggal_trx >= '$tanggal_awal' and tanggal_trx < '$tanggal_akhir' ";
-// $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
-// $d = mysqli_fetch_assoc($q);
-// $pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];
-
-
-// echo '<pre>';
-// echo "kamar_total : $kamar_total <br>";
-// echo "kamar_rusak : $kamar_rusak <br>";
-// echo "kamar_ok : $kamar_ok <br>";
-// echo "kamar_terisi : $kamar_terisi <br>";
-// echo "kamar_kosong : $kamar_kosong <br>";
-// echo "<br>";
-// echo "nominal_total : $nominal_total <br>";
-// echo "nominal_lunas : $nominal_lunas <br>";
-// echo "piutang : $piutang <br>";
-// echo '<pre>';
-// echo print_r($kamars);
-// echo '</pre>';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -197,16 +157,8 @@ $kamar_kosong = $kamar_ok - $kamar_terisi;
 
 <section class="section dashboard">
   <div class="card card-primary">
-    <!-- <div class="card-header">
-      <style>.blok-filter{display:flex} .blok-filter div{margin-right:15px}</style>
-      <div class="blok-filter">
-        <div>Filter</div>
-        <div>
-          <input type="text" class="form-control input-sm">
-        </div>
-      </div>
-    </div> -->
-    <div class="card-body" style="padding-top:15px">
+
+  <div class="card-body" style="padding-top:15px">
 
       <!-- ilustrasi -->
       <style>

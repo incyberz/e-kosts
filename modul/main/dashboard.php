@@ -11,10 +11,10 @@ $total_transaksi = 0;
 
 
 $s = "SELECT *,
-(SELECT id_jenis_trx_kunci FROM tb_trx_kunci k JOIN tb_trx_bayar y ON k.id_trx_bayar=y.id WHERE y.id_kamar=a.id order by k.tanggal_trx DESC limit 1) as kunci_dipinjam, 
-(SELECT id FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as last_id_trx_bayar,  
-(SELECT jatuh_tempo FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as jatuh_tempo,  
-(SELECT nominal FROM tb_trx_bayar WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as nominal  
+(SELECT kunci_dipinjam FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as kunci_dipinjam, 
+(SELECT id FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as last_id_trx,  
+(SELECT jatuh_tempo FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as jatuh_tempo,  
+(SELECT nominal FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as nominal  
 
 from tb_kamar a order by no_kamar";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
@@ -93,7 +93,7 @@ $kamar_kosong = $kamar_ok - $kamar_terisi;
 $periode = date('my');
 $tanggal_awal = '2023-2-1'; //zzz debug
 $tanggal_akhir = '2023-3-1'; //zzz debug
-$s = "SELECT sum(nominal) as pendapatan_bulan_ini from tb_trx_bayar where tanggal_trx >= '$tanggal_awal' and tanggal_trx < '$tanggal_akhir' ";
+$s = "SELECT sum(nominal) as pendapatan_bulan_ini from tb_trx where tanggal_trx >= '$tanggal_awal' and tanggal_trx < '$tanggal_akhir' ";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
 $d = mysqli_fetch_assoc($q);
 $pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];

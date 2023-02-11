@@ -32,5 +32,7 @@
     padding: 12px;
     margin-bottom: 15px;
   }
+  .system {font-family:consolas}
+  .hideit{display:none}
 
 </style>
