@@ -136,14 +136,6 @@ $last_trx_kunci = "
 
 <section class="section dashboard">
   <div class="row">
-    <style>
-      .tabel-data{margin-bottom:30px}
-      .judul-tabel{padding:5px; background: linear-gradient(#efc,#cfc); letter-spacing:2px; text-transform: uppercase}
-      .td-edit{ background: linear-gradient(#efe,#cfc); cursor:pointer; text-align:center; transition:.2s}
-      .td-edit:hover{ background: linear-gradient(#fef,#fcf); letter-spacing:1px}
-      .tmp{background:yellow !important; display:none}
-    </style>
-
     <div class="col-lg-6">
       <div class="wadah gradasi-hijau">
       <?=$last_trx?>

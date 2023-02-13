@@ -15,6 +15,7 @@ if ($online_version) {
     $db_server = "localhost";
     $db_user = "root";
     $db_pass = 'mylocalhost2023';
+    $db_pass = '';
     $db_name = "db_ekost";
 }
 

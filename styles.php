@@ -35,4 +35,15 @@
   .system {font-family:consolas}
   .hideit{display:none}
 
+  .item-ilustrasi{ border-radius:50%; height:100px; width:100px; font-size:60px; text-align:center; margin-right:10px; margin-bottom:10px; transition:.2s}
+  .tabel-data{margin-bottom:30px}
+  .judul-tabel{padding:5px; background: linear-gradient(#efc,#cfc); letter-spacing:2px; text-transform: uppercase}
+  .tmp{background:yellow !important; display:none}
+
+  .td-edit{ background: linear-gradient(#efe,#cfc); cursor:pointer; transition:.2s}
+  .td-edit:hover{ background: linear-gradient(#fef,#fcf); letter-spacing:1px}
+  .fasilitas{color:gray; transition: .2s}
+  .fasilitas label{cursor: pointer;}
+  .fasilitas:hover{color:darkblue; text-transform: uppercase; letter-spacing: .3px}
+  .fas_tersedia{color:green; font-weight:bold; background:linear-gradient(#efe,#cfc); text-transform: uppercase}
 </style>
