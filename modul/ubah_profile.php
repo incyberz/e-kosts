@@ -1,30 +1,39 @@
 <?php
+if(isset($_FILES['file_profile'])){
+
+  $username = $_POST['username'];
+  $new_file = "petugas__$username.jpg";
+  $target = "uploads/$new_file";
+
+  if(move_uploaded_file($_FILES['file_profile']['tmp_name'],$target)){
+    $s = "UPDATE tb_petugas set profile='$new_file' where username='$username'";
+    $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+    $pesan = "Sukses upload dan update profile petugas.";
+    $type = 'success';
+  }else{
+    $type = 'danger';
+    $pesan = "Gagal upload.";
+  }
+  die("
+  <div class='alert alert-$type'>
+    $pesan
+    <hr/>
+    <a class='btn btn-primary btn-sm' href='?manage_petugas'>Back to Manage Petugas</a>
+  </div>
+  ");
+}
+
 $username = isset($_GET['username']) ? $_GET['username'] : die(erid('username'));
 $profile = isset($_GET['profile']) ? $_GET['profile'] : die(erid('profile'));
 
 $s = "SELECT nama_petugas, profile from tb_petugas WHERE username='$username'";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
-
 $d=mysqli_fetch_assoc($q);
 
 $profile_na = "uploads/profile_na.gif";
 $path_profile = "uploads/$d[profile]";
 $profile = (file_exists($path_profile) and $d['profile']!='') ? $path_profile : $profile_na;
 $img_profile = "<img class='profile-big' src='$profile' />";
-
-
-$tb_petugas = "
-<table class='table'>
-<tr>
-  <td>$img_profile</td>
-  <td>$d[nama_petugas]</td>
-</tr>
-</table>
-";
-
-
-
-
 ?>
 <div class="pagetitle">
   <h1>Ubah Profile: <?=$d['nama_petugas']?></h1>
@@ -33,7 +42,18 @@ $tb_petugas = "
 <section class="section dashboard">
   <div class="card card-primary mt-2">
     <div class="card-body" style="padding-top:15px">
-      <?=$tb_petugas?>
+      <div class="text-center p-4">
+        <?=$img_profile?>
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        <input name=username class=debug value=<?=$username?>>
+        <div>
+          <input type="file" name="file_profile" accept="image/jpeg" class="form-control" required>
+        </div>
+        <div class='mt-2'>
+          <button class="btn btn-primary btn-block">Upload</button>
+        </div>
+      </form>
     </div>
   </div><!-- End Card -->
 </section>

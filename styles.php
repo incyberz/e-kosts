@@ -46,6 +46,8 @@
   .fasilitas label{cursor: pointer;}
   .fasilitas:hover{color:darkblue; text-transform: uppercase; letter-spacing: .3px}
   .fas_tersedia{color:green; font-weight:bold; background:linear-gradient(#efe,#cfc); text-transform: uppercase}
-  .profile-petugas{height: 50px; width:50px; box-shadow:1px 1px 5px gray; border-radius:50%; background:white; padding: 2px; transition:.2s; object-fit:cover}
-  .profile-petugas:hover{transform:scale(1.2)}
+  .profile-petugas, .profile-big{box-shadow:1px 1px 5px gray; border-radius:50%; background:white; padding: 2px; transition:.2s; object-fit:cover}
+  .profile-petugas:hover,.profile-big:hover{transform:scale(1.2)}
+  .profile-petugas{height: 50px; width:50px;}
+  .profile-big{height: 150px; width:150px;}
 </style>

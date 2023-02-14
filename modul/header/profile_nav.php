@@ -1,20 +1,20 @@
 <li class="nav-item dropdown pe-3">
 
   <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-    <span class="d-none d-md-block dropdown-toggle ps-2">Cep Lukman</span>
+    <img src="<?=$my_profile?>" alt="Profile" class="rounded-circle">
+    <span class="d-none d-md-block dropdown-toggle ps-2"><?=$d_petugas['nama_petugas']?></span>
   </a><!-- End Profile Iamge Icon -->
 
   <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
     <li class="dropdown-header">
-      <h6>Cep Lukman</h6>
+      <h6><?=$d_petugas['nama_petugas']?></h6>
       <span>Administrator</span>
     </li>
     <li>
       <hr class="dropdown-divider">
     </li>
 
-    <li>
+    <!-- <li>
       <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
         <i class="bi bi-person"></i>
         <span>My Profile</span>
@@ -29,10 +29,10 @@
         <i class="bi bi-gear"></i>
         <span>Account Settings</span>
       </a>
-    </li>
-    <li>
+    </li> -->
+    <!-- <li>
       <hr class="dropdown-divider">
-    </li>
+    </li> -->
 
     <!-- <li>
       <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
