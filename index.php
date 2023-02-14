@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION['ekost_username'])){
+  $_SESSION['ekost_username'] = 'insho';
+}
+
 $dm=1;
 include 'conn.php';
 $durasi_warning = 10;
@@ -13,6 +18,9 @@ function format_tanggal($d, $j)
     return date('d', strtotime($d)).' '.$nama_bulan[$m-1].' '.date('Y', strtotime($d)).$jam;
 }
 
+
+// get session data
+$cusername = isset($_SESSION['ekost_username']) ? $_SESSION['ekost_username'] : die('Anda belum login.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
