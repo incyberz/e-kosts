@@ -233,7 +233,7 @@ $tbpenyewa = "
 
 
       let isi_baru = prompt(petunjuk,isi);
-      if(isi_baru.trim()==isi || !isi_baru) return;
+      if(!isi_baru || isi_baru.trim()==isi) return;
 
 
 

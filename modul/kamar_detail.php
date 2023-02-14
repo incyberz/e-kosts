@@ -243,25 +243,34 @@ $ilustrasi_kamar = "
 ";
 
 $edit['no_kamar'] = "<td class='td-edit text-center' id='td-edit__no_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
-$edit['nama_kamar'] = "<td class='td-edit text-center' id='td-edit__nama_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
-$edit['lokasi'] = "<td class='td-edit text-center' id='td-edit__lokasi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
-$edit['kondisi'] = "<td class='td-edit text-center' id='td-edit__kondisi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
-$edit['tarif'] = "<td class='td-edit text-center' id='td-edit__tarif__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
-$edit['deskripsi'] = "<td class='td-edit text-center' id='td-edit__deskripsi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
-
 $tmp['no_kamar'] = "<td class='tmp' id='tmp__no_kamar'>$d[no_kamar]</td>";
-$tmp['nama_kamar'] = "<td class='tmp' id='tmp__nama_kamar'>$d[nama_kamar]</td>";
-$tmp['lokasi'] = "<td class='tmp' id='tmp__lokasi'>$d[lokasi]</td>";
-$tmp['kondisi'] = "<td class='tmp' id='tmp__kondisi'>$d[kondisi]</td>";
-$tmp['tarif'] = "<td class='tmp' id='tmp__tarif'>$d[tarif]</td>";
-$tmp['deskripsi'] = "<td class='tmp' id='tmp__deskripsi'>$d[deskripsi]</td>";
-
 $tampilan['no_kamar'] = "<td class='tampilan' id='tampilan__no_kamar'>$no_kamar</td>";
+
+$edit['nama_kamar'] = "<td class='td-edit text-center' id='td-edit__nama_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$tmp['nama_kamar'] = "<td class='tmp' id='tmp__nama_kamar'>$d[nama_kamar]</td>";
 $tampilan['nama_kamar'] = "<td class='tampilan' id='tampilan__nama_kamar'>$d[nama_kamar]</td>";
+
+$edit['lokasi'] = "<td class='td-edit text-center' id='td-edit__lokasi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$tmp['lokasi'] = "<td class='tmp' id='tmp__lokasi'>$d[lokasi]</td>";
 $tampilan['lokasi'] = "<td class='tampilan' id='tampilan__lokasi'>$d[lokasi]</td>";
+
+$edit['kondisi'] = "<td class='td-edit text-center' id='td-edit__kondisi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$tmp['kondisi'] = "<td class='tmp' id='tmp__kondisi'>$d[kondisi]</td>";
 $tampilan['kondisi'] = "<td class='tampilan' id='tampilan__kondisi'>$kondisi_text</td>";
+
+$edit['tarif'] = "<td class='td-edit text-center' id='td-edit__tarif__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$tmp['tarif'] = "<td class='tmp' id='tmp__tarif'>$d[tarif]</td>";
 $tampilan['tarif'] = "<td class='tampilan' id='tampilan__tarif'>".number_format($d['tarif'])."/bulan</td>";
+
+$edit['deskripsi'] = "<td class='td-edit text-center' id='td-edit__deskripsi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$tmp['deskripsi'] = "<td class='tmp' id='tmp__deskripsi'>$d[deskripsi]</td>";
 $tampilan['deskripsi'] = "<td class='tampilan' id='tampilan__deskripsi'>$d[deskripsi]</td>";
+
+$edit['fasilitas'] = "<td class='td-edit text-center' id='td-edit__fasilitas__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$tmp['fasilitas'] = "<td class='tmp' id='tmp__fasilitas'>$d[fasilitas]</td>";
+$tampilan['fasilitas'] = "<td class='tampilan' id='tampilan__fasilitas'>$d[fasilitas]</td>";
+
+
 
 
 $tbkamar = "
@@ -273,6 +282,7 @@ $tbkamar = "
   <tr><td>Kondisi</td>$tampilan[kondisi]$tmp[kondisi]$edit[kondisi]</tr>
   <tr><td>Tarif</td>$tampilan[tarif]$tmp[tarif]$edit[tarif]</tr>
   <tr><td>Deskripsi</td>$tampilan[deskripsi]$tmp[deskripsi]$edit[deskripsi]</tr>
+  <tr class='debug'><td>Fasilitas</td>$tampilan[fasilitas]$tmp[fasilitas]$edit[fasilitas]</tr>
 </table>
 ";
 
@@ -290,7 +300,7 @@ while ($f=mysqli_fetch_assoc($q)) {
     $tersedia_sty = '';
   }
 
-  $li_fas .= "<li class='fasilitas $tersedia_sty p-2'><input type=checkbox id='fas__$f[id]' class='fas_kamar' $fas_checked value='$f[id]'> <label for='fas__$f[id]'>$f[nama_fasilitas] </label></li>";
+  $li_fas .= "<li class='fasilitas $tersedia_sty p-2' id='li_fas__$f[id]'><input type=checkbox id='fas__$f[id]' class='fas_input' $fas_checked value='$f[id]'> <label for='fas__$f[id]'>$f[nama_fasilitas] </label></li>";
 }
 
 
@@ -409,8 +419,7 @@ $tbfas = "
       if(kolom=='tarif') petunjuk += ' (masukan hanya angka)';
 
       let isi_baru = prompt(petunjuk,isi);
-      if(isi_baru.trim()==isi || !isi_baru) return;
-      
+      if(!isi_baru || isi_baru.trim()==isi) return;
       if(kolom=='kondisi'){
         isi_baru = parseInt(isi_baru);
         if(isi_baru>1 || isi_baru<0){
@@ -459,53 +468,29 @@ $tbfas = "
       let id = rid[1];
       // alert(id); return;
       
-      let tid = $(this).find(":checkbox")[0].id;
-      
-      let isi = $("#tmp__"+kolom).text();
 
-      let petunjuk = `Data ${kolom} baru:`;
-
-      if(kolom=='kondisi') petunjuk += ' 1=Bagus, 0=Rusak';
-      if(kolom=='tarif') petunjuk += ' (masukan hanya angka)';
-
-      let isi_baru = prompt(petunjuk,isi);
-      if(isi_baru.trim()==isi || !isi_baru) return;
-      
-      if(kolom=='kondisi'){
-        isi_baru = parseInt(isi_baru);
-        if(isi_baru>1 || isi_baru<0){
-        alert('Untuk kondisi hanya boleh berisi nilai 1=Bagus dan 0=Rusak\n\nSilahkan coba kembali'+isi_baru);
-        return;
-
+      let li_fas = document.getElementsByClassName('fas_input');
+      let fasilitas = '';
+      for (let i = 0; i < li_fas.length; i++) {
+        if(li_fas[i].checked){
+          fasilitas += li_fas[i].value+';';
         }
       }
 
-      if (kolom=='tarif') {
-        isi_baru = parseInt(isi_baru);
-        if(isNaN(isi_baru)){
-          alert('Untuk tarif hanya boleh angka.\n\nSilahkan coba kembali');
-          return;
-        }
-        if(isi_baru<100000 || isi_baru>1000000){
-          alert('Untuk tarif hanya berkisar antara 100.000 s.d 1.000.000\n\nSilahkan coba kembali');
-          return;
-        }
-      }
-
-
-      let link_ajax = `ajax/ajax_update_kamar.php?id=${id_kamar}&kolom=${kolom}&isi_baru=${isi_baru}`;
+      let link_ajax = `ajax/ajax_update_kamar.php?id=${id}&kolom=fasilitas&isi_baru=${fasilitas}`;
 
       $.ajax({
         url:link_ajax,
         success:function(a){
           if(a.trim()=='sukses'){
-            if(kolom=='kondisi'){ location.reload(); return; }
-            $("#tmp__"+kolom).text(isi_baru)
-            if(kolom=='tarif') isi_baru = 'Rp '+ Intl.NumberFormat('de-DE').format(isi_baru) +'/bulan';
-            if(kolom=='kondisi') isi_baru = isi_baru=='1' ? 'Bagus' : 'Rusak';
-            $("#tampilan__"+kolom).text(isi_baru)
+            if($('#fas__'+id).prop("checked")){
+              // true = checked
+              $('#li_fas__'+id).addClass('fas_tersedia');
+            }else{
+              $('#li_fas__'+id).removeClass('fas_tersedia');
+            }
           }else{
-            alert(a)
+            alert(`Gagal update fasilitas. \n\n${a}`)
           }
         }
       })

@@ -1,17 +1,17 @@
 <?php
-$s = "SELECT * from tb_penyewa ORDER BY nama_penyewa";
+$s = "SELECT * from tb_user ORDER BY nama_user";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
 
 
 
-$tb_penyewa = '<table class="table">
+$tb_user = '<table class="table">
 <thead>
     <th>No</th>
-    <th>Nama Penyewa</th>
+    <th>Nama User</th>
     <th>Alamat</th>
     <th>WhatsApp</th>
-    <th>No HP</th>
-    <th>No KTP</th>
+    <th>Username</th>
+    <th>Role</th>
     <th>Aksi</th>
 </thead>';
 
@@ -19,26 +19,27 @@ $tr='';
 $i=0;
 while ($d=mysqli_fetch_assoc($q)) {
   $i++;
+  $role_show = $d['role']==1 ? 'Admin' : '-';
   $tr .= "
-  <tr id=tr__$d[id]>
+  <tr id=tr__$d[username]>
     <td>$i</td>
-    <td class='td-edit' id='nama_penyewa__$d[id]'>$d[nama_penyewa]</td>
-    <td class='td-edit' id='alamat__$d[id]'>$d[alamat]</td>
-    <td class='td-edit' id='no_wa__$d[id]'>$d[no_wa]</td>
-    <td class='td-edit' id='no_hp__$d[id]'>$d[no_hp]</td>
-    <td class='td-edit' id='no_ktp__$d[id]'>$d[no_ktp]</td>
+    <td class='td-edit' id='nama_user__$d[username]'>$d[nama_user]</td>
+    <td class='td-edit' id='alamat__$d[username]'>$d[alamat]</td>
+    <td class='td-edit' id='no_wa__$d[username]'>$d[no_wa]</td>
+    <td class='td-edit' id='username__$d[username]'>$d[username]</td>
+    <td class='' id='role__$d[username]'>$role_show</td>
     <td>
-      <button class='btn btn-danger btn-sm btn_aksi' id='hapus__$d[id]'><i class='bi bi-trash'></i> Hapus</button>
-      <a href='?penyewa&id=$d[id]' class='btn btn-info btn-sm'><i class='bi bi-person'></i> Detail</button>
+      <button class='btn btn-danger btn-sm btn_aksi' id='hapus__$d[username]'><i class='bi bi-trash'></i> Hapus</button>
+      <a href='?user&username=$d[username]' class='btn btn-info btn-sm'><i class='bi bi-pencil'></i> Ubah Password</button>
     </td>
   </tr>
   ";
 }
 
 if($tr==''){
-  $tb_penyewa .= '<tr><td class=merah>Belum ada data Penyewa</td></tr></table>';
+  $tb_user .= '<tr><td class=merah>Belum ada data User</td></tr></table>';
 }else{
-  $tb_penyewa .= "$tr</table>";
+  $tb_user .= "$tr</table>";
 }
 
 
@@ -60,15 +61,15 @@ if($tr==''){
 
 ?>
 <div class="pagetitle">
-  <h1>Master Penyewa</h1>
+  <h1>Manage User</h1>
 </div>
 
 <section class="section dashboard">
-  <button class="btn btn-success btn_aksi" id='tambah__0'>Tambah Penyewa</button>
+  <button class="btn btn-success btn_aksi" id='tambah__0'>Tambah User</button>
   <div class="card card-primary mt-2">
     <div class="card-body" style="padding-top:15px">
-      <?=$tb_penyewa?>
-      <button class="btn btn-success btn_aksi" id='tambah__0'>Tambah Penyewa</button>
+      <?=$tb_user?>
+      <button class="btn btn-success btn_aksi" id='tambah__0'>Tambah User</button>
     </div>
   </div><!-- End Card -->
 </section>
@@ -101,21 +102,21 @@ if($tr==''){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let aksi = rid[0];
-      let id_penyewa = rid[1];
+      let username = rid[1];
 
       if(aksi=='hapus' || aksi=='delete'){
         let y = confirm('Yakin untuk menghapus data ini?');
         if(!y) return;
 
-        let link_ajax = 'ajax/ajax_penyewa_hapus.php?id='+id_penyewa;
+        let link_ajax = 'ajax/ajax_user_hapus.php?username='+username;
         $.ajax({
           url:link_ajax,
           success:function(a){
             if(a.trim()=='sukses'){
-              $('#tr__'+id_penyewa).fadeOut();
+              $('#tr__'+username).fadeOut();
             }else{
               if(a.toLowerCase().search('cannot delete or update a parent row')){
-                alert('Gagal menghapus data. Data ini dibutuhkan untuk relasi data ke tabel lain.');
+                alert('Gagal menghapus data. \n\nData ini dibutuhkan untuk relasi data ke tabel lain.\n\n'+a);
               }else{
                 alert('Gagal menghapus data.');
               }
@@ -125,11 +126,11 @@ if($tr==''){
       } // end of hapus
 
       if(aksi=='tambah' || aksi=='add'){
-        let y = confirm('Ingin menambah data Penyewa Baru?');
+        let y = confirm('Ingin menambah data User Baru?');
         if(!y) return;        
 
 
-        let link_ajax = 'ajax/ajax_penyewa_new.php';
+        let link_ajax = 'ajax/ajax_user_new.php';
         $.ajax({
           url:link_ajax,
           success:function(a){
@@ -148,7 +149,7 @@ if($tr==''){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[0];
-      let id_penyewa = rid[1];
+      let username = rid[1];
       let isi = $(this).text();
 
       let petunjuk = `Data ${kolom} baru:`;
@@ -169,15 +170,15 @@ if($tr==''){
         }
       }
 
-      let link_ajax = `ajax/ajax_penyewa_update.php?id=${id_penyewa}&kolom=${kolom}&isi_baru=${isi_baru}`;
+      let link_ajax = `ajax/ajax_user_update.php?username=${username}&kolom=${kolom}&isi_baru=${isi_baru}`;
 
       $.ajax({
         url:link_ajax,
         success:function(a){
           if(a.trim()=='sukses'){
-            $("#"+kolom+"__"+id_penyewa).text(isi_baru)
+            $("#"+kolom+"__"+username).text(isi_baru)
           }else{
-            alert('Gagal mengubah data.')
+            alert('Gagal mengubah data.\n\n'+a)
           }
         }
       })

@@ -107,7 +107,7 @@ while ($d=mysqli_fetch_assoc($q)) {
         <tr>
             <td>$no_kamar</td>
             <td>
-                <a href='?kamar_detail&id=$d[id]'>$d[nama_kamar]</a>
+                <a href='?kamar_detail&id=$d[id]'>$d[nama_kamar] ~ <i class='bi bi-pencil'></i></a>
                 <br>
                 <small>
                     <i>Rp ".number_format($d['tarif'])."/bulan</i>
@@ -125,7 +125,9 @@ while ($d=mysqli_fetch_assoc($q)) {
                 <br/>
                 <b>Jatuh Tempo</b>: $jatuh_tempo_ket
             </td>
-            <td>Delete</td>
+            <td>
+                <button class='btn btn-danger btn-sm btn_aksi' id='hapus__$d[id]'><i class='bi bi-trash'></i> Hapus</button>
+            </td>
         </tr>
     ";
 }
@@ -174,3 +176,58 @@ $kamar_kosong = $kamar_ok - $kamar_terisi;
     </div>
   </div><!-- End Card -->
 </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  $(function(){
+    $(".btn_aksi").click(function(){
+      let tid = $(this).prop('id');
+      let rid = tid.split('__');
+      let aksi = rid[0];
+      let id_kamar = rid[1];
+
+      if(aksi=='hapus' || aksi=='delete'){
+        let y = confirm('Yakin untuk menghapus data ini?');
+        if(!y) return;
+
+        let link_ajax = 'ajax/ajax_kamar_hapus.php?id='+id_kamar;
+        $.ajax({
+          url:link_ajax,
+          success:function(a){
+            if(a.trim()=='sukses'){
+              $('#tr__'+id_kamar).fadeOut();
+            }else{
+              if(a.toLowerCase().search('cannot delete or update a parent row')){
+                alert('Gagal menghapus data. Data ini dibutuhkan untuk relasi data ke tabel lain.');
+              }else{
+                alert('Gagal menghapus data.');
+              }
+            }
+          }
+        })
+      } // end of hapus
+    }) // end btn_aksi
+
+  })
+</script>
