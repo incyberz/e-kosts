@@ -1,75 +1,39 @@
 <?php
-$s = "SELECT * from tb_user ORDER BY nama_user";
+$username = isset($_GET['username']) ? $_GET['username'] : die(erid('username'));
+$profile = isset($_GET['profile']) ? $_GET['profile'] : die(erid('profile'));
+
+$s = "SELECT nama_petugas, profile from tb_petugas WHERE username='$username'";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
 
+$d=mysqli_fetch_assoc($q);
+
+$profile_na = "uploads/profile_na.gif";
+$path_profile = "uploads/$d[profile]";
+$profile = (file_exists($path_profile) and $d['profile']!='') ? $path_profile : $profile_na;
+$img_profile = "<img class='profile-big' src='$profile' />";
 
 
-$tb_user = '<table class="table">
-<thead>
-    <th>No</th>
-    <th>Nama User</th>
-    <th>Alamat</th>
-    <th>WhatsApp</th>
-    <th>Username</th>
-    <th>Role</th>
-    <th>Aksi</th>
-</thead>';
-
-$tr='';
-$i=0;
-while ($d=mysqli_fetch_assoc($q)) {
-  $i++;
-  $role_show = $d['role']==1 ? 'Admin' : '-';
-  $tr .= "
-  <tr id=tr__$d[username]>
-    <td>$i</td>
-    <td class='td-edit' id='nama_user__$d[username]'>$d[nama_user]</td>
-    <td class='td-edit' id='alamat__$d[username]'>$d[alamat]</td>
-    <td class='td-edit' id='no_wa__$d[username]'>$d[no_wa]</td>
-    <td class='td-edit' id='username__$d[username]'>$d[username]</td>
-    <td class='' id='role__$d[username]'>$role_show</td>
-    <td>
-      <button class='btn btn-danger btn-sm btn_aksi' id='hapus__$d[username]'><i class='bi bi-trash'></i> Hapus</button>
-      <a href='?user&username=$d[username]' class='btn btn-info btn-sm'><i class='bi bi-pencil'></i> Ubah Password</button>
-    </td>
-  </tr>
-  ";
-}
-
-if($tr==''){
-  $tb_user .= '<tr><td class=merah>Belum ada data User</td></tr></table>';
-}else{
-  $tb_user .= "$tr</table>";
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+$tb_petugas = "
+<table class='table'>
+<tr>
+  <td>$img_profile</td>
+  <td>$d[nama_petugas]</td>
+</tr>
+</table>
+";
 
 
 
 
 ?>
 <div class="pagetitle">
-  <h1>Manage User</h1>
+  <h1>Ubah Profile: <?=$d['nama_petugas']?></h1>
 </div>
 
 <section class="section dashboard">
-  <button class="btn btn-success btn_aksi" id='tambah__0'>Tambah User</button>
   <div class="card card-primary mt-2">
     <div class="card-body" style="padding-top:15px">
-      <?=$tb_user?>
-      <button class="btn btn-success btn_aksi" id='tambah__0'>Tambah User</button>
+      <?=$tb_petugas?>
     </div>
   </div><!-- End Card -->
 </section>
@@ -126,7 +90,7 @@ if($tr==''){
       } // end of hapus
 
       if(aksi=='tambah' || aksi=='add'){
-        let y = confirm('Ingin menambah data User Baru?');
+        let y = confirm('Ingin menambah data Petugas Baru?');
         if(!y) return;        
 
 
@@ -142,6 +106,35 @@ if($tr==''){
             }
           }
         })        
+      }
+
+      if(aksi=='ubah_password'){
+        let y = confirm(`Ingin mengubah password atas username: ${username}?`);
+        if(!y) return;
+
+        let np = prompt('Password baru Anda:');
+        if(!y) return;
+
+        let cp = prompt('Konfirmasi Password baru Anda:');
+        if(!y) return;
+
+        if(np!==cp){
+          alert('Maaf, password baru dan konfirmasi password tidak sama.');
+          return;
+        }
+
+        let link_ajax = `ajax/ajax_user_update.php?username=${username}&kolom=password&isi_baru=${np}`;
+
+        $.ajax({
+          url:link_ajax,
+          success:function(a){
+            if(a.trim()=='sukses'){
+              alert('Sukses mengubah password. \n\nSilahkan diingat dan dicatat password tersebut agar tidak lupa.');
+            }else{
+              alert('Gagal mengubah data.\n\n'+a)
+            }
+          }
+        })
       }
     }) // end btn_aksi
 

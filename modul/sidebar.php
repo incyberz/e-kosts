@@ -24,9 +24,9 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="?manage_user">
+      <a class="nav-link collapsed" href="?manage_petugas">
         <i class="bi bi-person"></i>
-        <span>Manage User</span>
+        <span>Manage Petugas</span>
       </a>
     </li>
 
