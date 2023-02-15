@@ -354,7 +354,7 @@ $pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];
         </div><!-- End Customers Card -->
 
         <!-- Reports -->
-        <div class="col-12">
+        <!-- <div class="col-12">
           <div class="card">
 
             <div class="filter">
@@ -373,7 +373,7 @@ $pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];
             <div class="card-body">
               <h5 class="card-title">Grafik <span>/Tahun ini</span></h5>
 
-              <!-- Line Chart -->
+              < !-- Line Chart -- >
               <div id="reportsChart"></div>
 
               <script>
@@ -422,15 +422,16 @@ $pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];
                   }).render();
                 });
               </script>
-              <!-- End Line Chart -->
+              < !-- End Line Chart -- >
 
             </div>
 
           </div>
-        </div><!-- End Reports -->
+        </div> -->
+        <!-- End Reports -->
 
         <!-- Recent Sales -->
-        <div class="col-12">
+        <!-- <div class="col-12">
           <div class="card recent-sales overflow-auto">
 
             <div class="filter">
@@ -501,7 +502,8 @@ $pendapatan_bulan_ini = $d['pendapatan_bulan_ini'];
             </div>
 
           </div>
-        </div><!-- End Recent Sales -->
+        </div> -->
+        <!-- End Recent Sales -->
       </div>
     </div><!-- End Left side columns -->
   </div>
