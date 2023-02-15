@@ -8,6 +8,13 @@ $terbayar = 0;
 $jumlah_jt = 0;
 $jumlah_hampir_jt=0;
 
+$fasilitas = [];
+$s = "SELECT * from tb_fasilitas";
+$q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+while ($d=mysqli_fetch_assoc($q)) {
+  $fasilitas[$d['id']] = $d['nama_fasilitas'];
+}
+
 
 
 $s = "SELECT *,
@@ -19,7 +26,6 @@ from tb_kamar a ";
 // die($s);
 
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
-
 
 
 $tbhomes = '<table class="table">
@@ -103,6 +109,23 @@ while ($d=mysqli_fetch_assoc($q)) {
     $no_kamar = $d['no_kamar']<10 ? '0'.$d['no_kamar'] : $d['no_kamar'];
     $d['deskripsi'] = $d['deskripsi']=='' ? '-' : $d['deskripsi'];
 
+    // fasilitas list
+    if($d['fasilitas']==''){
+      $li_fasilitas = '<i class=abu>(belum ada)</i>';
+    }else{
+      $li_fasilitas = '';
+      $ridfas = explode(';',$d['fasilitas']);
+      for ($i=0; $i < count($ridfas); $i++) {
+        if($ridfas[$i]==''){
+          continue; 
+        }else{
+          $li_fasilitas.= "<li>".$fasilitas[$ridfas[$i]]."</li>";
+        }
+      }
+    }
+    $ul_fasilitas = "<ul>$li_fasilitas</ul>";
+
+
     $tbhomes .= "
         <tr>
             <td>$no_kamar</td>
@@ -112,7 +135,8 @@ while ($d=mysqli_fetch_assoc($q)) {
                 <small>
                     <i>Rp ".number_format($d['tarif'])."/bulan</i>
                     <br/>
-                    <b>Deskripsi</b>: $d[deskripsi]
+                    <b>Fasilitas</b>: <a href='?kamar_detail&id=$d[id]'><i class='bi bi-pencil'></i></a> 
+                    $ul_fasilitas
                 </small>
             </td>
             <td class='gradasi-$warna text-center' style='font-size:50px'>
