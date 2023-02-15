@@ -1,3 +1,4 @@
+<main id='main' class='main'>
 <?php
 
 $a = $_SERVER['REQUEST_URI'];
@@ -22,3 +23,5 @@ if (file_exists("modul/$parameter.php")) {
             include "modul/na.php";
     }
 }
+?>
+</main>

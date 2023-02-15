@@ -1,8 +1,5 @@
 <?php
 session_start();
-if(!isset($_SESSION['ekost_username'])){
-  $_SESSION['ekost_username'] = 'insho';
-}
 
 $dm=1;
 include 'conn.php';
@@ -19,15 +16,6 @@ function format_tanggal($d, $j)
 }
 
 
-// get session data and profile
-$cusername = isset($_SESSION['ekost_username']) ? $_SESSION['ekost_username'] : die('Anda belum login.');
-$s = "SELECT * from tb_petugas WHERE username='$cusername'";
-$q = mysqli_query($cn, $s) or die(mysqli_error($cn));
-$d_petugas=mysqli_fetch_assoc($q);
-
-$profile_na = "uploads/profile_na.gif";
-$path_profile = "uploads/$d_petugas[profile]";
-$my_profile = (file_exists($path_profile) and $d_petugas['profile']!='') ? $path_profile : $profile_na;
 
 ?>
 <!DOCTYPE html>
@@ -73,18 +61,17 @@ $my_profile = (file_exists($path_profile) and $d_petugas['profile']!='') ? $path
 
 <body>
 
-  <!-- ======= Header ======= -->
-  <?php include 'modul/header.php';?>
-  
-  <!-- ======= Sidebar ======= -->
-  <?php include 'modul/sidebar.php';?>
-
-  <main id="main" class="main">
-    <?php include 'routing.php';?>
-  </main>
-
-  <!-- ======= Footer ======= -->
-  <?php include 'modul/footer.php';?>
+  <?php
+  if(!isset($_SESSION['ekost_username'])){
+    include 'login.php';
+  }else{
+    include 'user_var.php';
+    include 'modul/header.php';
+    include 'modul/sidebar.php';
+    include 'routing.php';
+    include 'modul/footer.php';
+  }
+  ?>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 

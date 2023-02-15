@@ -24,6 +24,13 @@
     </li>
 
     <li class="nav-item">
+      <a class="nav-link collapsed" href="?master_fasilitas">
+        <i class="bi bi-menu-button-wide"></i>
+        <span>Fasilitas Kamar</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a class="nav-link collapsed" href="?manage_petugas">
         <i class="bi bi-person"></i>
         <span>Manage Petugas</span>
