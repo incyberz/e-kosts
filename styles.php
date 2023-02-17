@@ -3,6 +3,10 @@
       echo 'display:none;';
   } ?>}
 
+  .tebal,.bold{font-weight:bold}
+  .small,.kecil{font-size:small}
+
+
   .merah{color:red}
   .hijau{color:green}
   .kuning{color:orange}
@@ -50,4 +54,5 @@
   .profile-petugas:hover,.profile-big:hover{transform:scale(1.2)}
   .profile-petugas{height: 50px; width:50px;}
   .profile-big{height: 150px; width:150px;}
+  .nama-kolom{font-family:consolas;font-size:small; color:gray; font-style:italic}
 </style>
