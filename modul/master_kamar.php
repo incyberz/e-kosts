@@ -36,7 +36,6 @@ $tbhomes = '<table class="table">
     <th>Aksi</th>
 </thead>';
 
-
 while ($d=mysqli_fetch_assoc($q)) {
     // echo "<div class='debug'>
     // trx: $d[trx]<br>
@@ -52,16 +51,21 @@ while ($d=mysqli_fetch_assoc($q)) {
     $status_kunci = 'Ada';
     $jatuh_tempo_ket = '-';
 
-    $rpenyewa = explode(';', $d['penyewa']);
-    $id_penyewa = $rpenyewa[0];
-    $nama_penyewa = $rpenyewa[1];
+    if($d['trx']!=''){
+      $rpenyewa = explode(';', $d['penyewa']);
+      $id_penyewa = $rpenyewa[0];
+      $nama_penyewa = $rpenyewa[1];
 
-    $rtrx = explode(';', $d['trx']);
-    $id_trx = $rtrx[0];
-    $jatuh_tempo = $rtrx[1];
-    $nominal = $rtrx[2];
+      $rtrx = explode(';', $d['trx']);
+      $id_trx = $rtrx[0];
+      $jatuh_tempo = $rtrx[1];
+      $nominal = $rtrx[2];
 
-    $eta = intval((strtotime($jatuh_tempo)-strtotime('now'))/(60*60*24));
+      $eta = intval((strtotime($jatuh_tempo)-strtotime('now'))/(60*60*24));
+    }else{
+      $eta=0;
+    }
+
 
     $kamar_total++;
     if ($d['kondisi']==1) {
@@ -157,6 +161,11 @@ while ($d=mysqli_fetch_assoc($q)) {
 }
 $tbhomes.='</table>';
 
+if(mysqli_num_rows($q)==0){
+  $tbhomes = "<div class='alert alert-danger mt-2 mb-2'>Belum ada Data Kamar. Silahkan Anda klik Tambah Kamar!</div>";
+}
+
+
 $kamar_rusak = $kamar_total - $kamar_ok;
 $kamar_kosong = $kamar_ok - $kamar_terisi;
 
@@ -193,10 +202,11 @@ $kamar_kosong = $kamar_ok - $kamar_terisi;
         .item-ilustrasi:hover{font-size:45px}
         .item-ket{font-size:12px; margin-top:-10px}
       </style>
+      <button class='btn btn-success btn-sm btn_aksi' id='tambah__0'>Tambah Kamar</button>
       <div class="ilustrasi">
         <?=$tbhomes?>
       </div>
-      
+      <button class='btn btn-success btn-sm btn_aksi' id='tambah__0'>Tambah Kamar</button>
     </div>
   </div><!-- End Card -->
 </section>
@@ -251,6 +261,26 @@ $kamar_kosong = $kamar_ok - $kamar_terisi;
           }
         })
       } // end of hapus
+
+      if(aksi=='tambah' || aksi=='add'){
+        let y = confirm('Ingin menambah data Kamar Baru?');
+        if(!y) return;        
+
+
+        let link_ajax = 'ajax/ajax_kamar_new.php';
+        $.ajax({
+          url:link_ajax,
+          success:function(a){
+            if(a.trim()=='sukses'){
+              alert('Add Rows Data Baru sukses. Silahkan Edit isi data tersebut!');
+              location.reload();
+            }else{
+              alert('Gagal menambah data.');
+            }
+          }
+        })        
+      }
+
     }) // end btn_aksi
 
   })

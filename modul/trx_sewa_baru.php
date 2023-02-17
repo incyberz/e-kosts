@@ -65,13 +65,37 @@ $id_penyewa_select = "
       </ul>
     </div>
     <div class=col-3>
-      <a href='?tambah_penyewa&id_kamar=$id_kamar&from=sewa_baru' class='btn btn-success btn-sm btn-block' id=btn_tambah_penyewa><i class='bi bi-plus'></i> Tambah</a>
+      <a href='?master_penyewa' class='btn btn-success btn-sm btn-block' id=btn_tambah_penyewa><i class='bi bi-plus'></i> Tambah</a>
     </div>
   </div>
 ";
 
 $d['deskripsi'] = $d['deskripsi']=='' ? '-' : $d['deskripsi'];
 $no_kamar = $d['no_kamar']<10 ? "0$d[no_kamar]" : $d['no_kamar'];
+
+
+$fasilitas = [];
+$s = "SELECT * from tb_fasilitas";
+$q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+while ($f=mysqli_fetch_assoc($q)) {
+  $fasilitas[$f['id']] = $f['nama_fasilitas'];
+}
+
+if($d['fasilitas']==''){
+  $li_fasilitas = '<i class=abu>(belum ada)</i>';
+}else{
+  $li_fasilitas = '';
+  $ridfas = explode(';',$d['fasilitas']);
+  for ($i=0; $i < count($ridfas); $i++) {
+    if($ridfas[$i]==''){
+      continue; 
+    }else{
+      $li_fasilitas.= "<li>".$fasilitas[$ridfas[$i]]."</li>";
+    }
+  }
+}
+$ul_fasilitas = "<ul class='m-0 '>$li_fasilitas</ul>";
+
 
 $new_trx = "
 <form method=post>
@@ -83,20 +107,26 @@ $new_trx = "
       <span class=debug>ID-trx-sebelumnya: <input name=id_trx_sebelumnya value=0><br></span>
       <i class=system>No. / Nama Kamar :</i> $no_kamar / $d[nama_kamar]<br>
       <i class=system>Tarif:</i> <span style='font-size:25px'>".frp($d['tarif'])."</span><br>
-      <i class=system>Deskripsi:</i> $d[deskripsi]<br>
+      <i class=system>Fasilitas:</i> $ul_fasilitas
     </div>
   </td></tr>
   <tr><td colspan=2><div class=wadah>$id_penyewa_select</div></td></tr>
   <tr class=debug><td>id_jenis_trx</td><td><input name=id_jenis_trx value=1></td></tr>
+</table>
+<table class='table tabel-data hideit' id=pasca_select_penyewa>
   <tr><td>Nominal</td><td><input class='form-control' name=nominal value='$d[tarif]' minlength=6 maxlength=7 required></td></tr>
   <tr><td>Dibayar oleh</td><td><input class='form-control' name=dibayar_oleh id=dibayar_oleh value='' minlength=3 maxlength=50 required><small>Atas nama: <span id=atas_nama>???</span></small></td></tr>
   <tr><td>Periode</td><td><input class='form-control' name=periode value='$periode' minlength=4 maxlength=4 required><small>Format: MMYY</small></td></tr>
   <tr><td>Jatuh Tempo Baru</td><td class='gradasi-hijau'>$jatuh_tempo_baru_show</td></tr>
-  <tr class=debug><td>Jatuh Tempo Baru</td><td><input name=jatuh_tempo value=$jatuh_tempo_baru></td></tr>
+  <tr class=debug><td>Jatuh Tempo Baru</td><td><input class='form-control' type=text name=jatuh_tempo value=$jatuh_tempo_baru></td></tr>
   <tr><td>Bayar via</td><td>$bayar_via_select</td></tr>
+  <tr>
+    <td colspan=2>
+      <div class='mb-2'><input type=checkbox id=cek> <label for=cek>Saya sudah menerima Bukti Transfer / Uang Cash untuk pembayaran sewa baru diatas dan sudah menyerahkan Kunci Kamar No. $no_kamar ($d[nama_kamar])</label></div>
+      <button class='btn btn-primary btn-block' name=btn_perpanjang_sewa id=btn_perpanjang_sewa disabled>Tambah Data Sewa</button>
+    </td>
+  </tr>
 </table>
-<div class='mb-2'><input type=checkbox id=cek> <label for=cek>Saya sudah menerima Bukti Transfer / Uang Cash untuk pembayaran sewa baru diatas dan sudah menyerahkan Kunci Kamar No. $no_kamar ($d[nama_kamar])</label></div>
-<button class='btn btn-primary btn-block' name=btn_perpanjang_sewa id=btn_perpanjang_sewa disabled>Tambah Data Sewa</button>
 </form>
 ";
 
@@ -149,6 +179,20 @@ $new_trx = "
 
 <script>
   $(function(){
+
+    
+
+    $("#id_penyewa").change(function(){
+      let id_penyewa = parseInt($(this).val());
+
+      if(id_penyewa){
+        $('#pasca_select_penyewa').fadeIn();   
+      }else{
+        $('#pasca_select_penyewa').fadeOut();
+      }
+
+    });
+    
     $("#cek").click(function(){
       let c = $(this).prop('checked');
       // alert(c)

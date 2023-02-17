@@ -12,6 +12,7 @@ if (isset($_POST['btn_perpanjang_sewa'])) {
     $s = "INSERT INTO tb_trx 
     (
         id_kamar,
+        petugas,
         id_penyewa,
         id_jenis_trx,
         jatuh_tempo,
@@ -24,6 +25,7 @@ if (isset($_POST['btn_perpanjang_sewa'])) {
         ) VALUES 
     (
         '$_POST[id_kamar]',
+        '$cusername',
         '$_POST[id_penyewa]',
         '$_POST[id_jenis_trx]',
         '$_POST[jatuh_tempo]',

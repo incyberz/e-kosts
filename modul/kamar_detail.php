@@ -1,5 +1,6 @@
 <?php
 $id = isset($_GET['id']) ? $_GET['id'] : die('<script>location.replace("?master_kamar")</script>');
+echo "<span class=debug id=id_kamar>$id</span>";
 $aksi_kamar = '';
 
 $s = "SELECT *,
@@ -13,7 +14,7 @@ $s = "SELECT *,
   FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as trx,  
 (SELECT tanggal_kembali_kunci FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as tanggal_kembali_kunci,  
 (SELECT keterangan_trx_kunci FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as keterangan_trx_kunci,  
-(SELECT concat(id_penyewa,';',nama_penyewa,';',no_ktp) FROM tb_trx b JOIN tb_penyewa p ON b.id_penyewa=p.id WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as penyewa,  
+(SELECT id_penyewa FROM tb_trx b JOIN tb_penyewa p ON b.id_penyewa=p.id WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as id_penyewa,  
 (SELECT last_notif FROM tb_trx WHERE id_kamar=a.id order by tanggal_trx DESC limit 1) as last_notif  
 
 from tb_kamar a where a.id=$id";
@@ -22,6 +23,11 @@ from tb_kamar a where a.id=$id";
 $q = mysqli_query($cn, $s) or die(mysqli_error($cn));
 if(mysqli_num_rows($q)!=1) die('Data kamar tidak ditemukan.');
 $d=mysqli_fetch_assoc($q);
+
+$s = "SELECT * from tb_penyewa where id=$d[id_penyewa]";
+$q = mysqli_query($cn, $s) or die(mysqli_error($cn));
+if(mysqli_num_rows($q)!=1) die('Data penyewa tidak ditemukan.');
+$dpenyewa=mysqli_fetch_assoc($q);
 
 $fill = '';
 $warna = 'biru';
@@ -38,12 +44,9 @@ $keterangan_trx_kunci = $d['keterangan_trx_kunci']=='' ? '-' : $d['keterangan_tr
 $no_kamar = $d['no_kamar']<10 ? '0'.$d['no_kamar'] : $d['no_kamar'];
 $d['deskripsi'] = $d['deskripsi']=='' ? '-' : $d['deskripsi'];
 
-if ($d['penyewa'] != '') {
-    $rpenyewa = explode(';', $d['penyewa']);
-    $id_penyewa = $rpenyewa[0];
-    $nama_penyewa = $rpenyewa[1];
-    $nama_penyewa_link = "<a href='?penyewa&id=$id_penyewa'>$nama_penyewa</a>";
-}
+$id_penyewa = $dpenyewa['id'];
+$nama_penyewa = $dpenyewa['nama_penyewa'];
+$nama_penyewa_link = "<a href='?penyewa&id=$id_penyewa'>$nama_penyewa</a>";
 
 if ($d['trx'] != '') {
     $rtrx = explode(';', $d['trx']);
@@ -80,7 +83,6 @@ if ($d['trx'] != '') {
 
 
     echo "<div class='debug'>
-    penyewa: $d[penyewa]<br>
     trx: $d[trx]<br>
     <br>
     </div>
@@ -433,7 +435,7 @@ $tbfas = "
       }
 
 
-      let link_ajax = `ajax/ajax_update_kamar.php?id=${id_kamar}&kolom=${kolom}&isi_baru=${isi_baru}`;
+      let link_ajax = `ajax/ajax_kamar_update.php?id=${id_kamar}&kolom=${kolom}&isi_baru=${isi_baru}`;
 
       $.ajax({
         url:link_ajax,
@@ -458,6 +460,7 @@ $tbfas = "
       let rid = tid.split('__');
       let id = rid[1];
       // alert(id); return;
+      let id_kamar = $('#id_kamar').text();
       
 
       let li_fas = document.getElementsByClassName('fas_input');
@@ -468,7 +471,8 @@ $tbfas = "
         }
       }
 
-      let link_ajax = `ajax/ajax_update_kamar.php?id=${id}&kolom=fasilitas&isi_baru=${fasilitas}`;
+      let link_ajax = `ajax/ajax_kamar_update.php?id=${id_kamar}&kolom=fasilitas&isi_baru=${fasilitas}`;
+      console.log(link_ajax);
 
       $.ajax({
         url:link_ajax,
