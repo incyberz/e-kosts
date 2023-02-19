@@ -57,7 +57,7 @@ while ($d=mysqli_fetch_assoc($q)) {
           <br><span class='nama-kolom'>Bayar via:</span> $bayar_via
         </td>
         <td>
-          <a href='?pdf&id=$id_pdf' class='btn btn-success btn-sm'>Cetak Bukti Bayar</a>
+          <a href='pdf/bukti_bayar.php?id=$id_pdf' class='btn btn-success btn-sm' target='_blank'>Cetak Bukti Bayar</a>
         </td>
       </tr>
     ";
