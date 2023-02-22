@@ -235,31 +235,31 @@ $ilustrasi_kamar = "
 </div>
 ";
 
-$edit['no_kamar'] = "<td class='td-edit text-center' id='td-edit__no_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['no_kamar'] = "<td class='editable text-center' id='td-edit__no_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['no_kamar'] = "<td class='tmp' id='tmp__no_kamar'>$d[no_kamar]</td>";
 $tampilan['no_kamar'] = "<td class='tampilan' id='tampilan__no_kamar'>$no_kamar</td>";
 
-$edit['nama_kamar'] = "<td class='td-edit text-center' id='td-edit__nama_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['nama_kamar'] = "<td class='editable text-center' id='td-edit__nama_kamar__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['nama_kamar'] = "<td class='tmp' id='tmp__nama_kamar'>$d[nama_kamar]</td>";
 $tampilan['nama_kamar'] = "<td class='tampilan' id='tampilan__nama_kamar'>$d[nama_kamar]</td>";
 
-$edit['lokasi'] = "<td class='td-edit text-center' id='td-edit__lokasi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['lokasi'] = "<td class='editable text-center' id='td-edit__lokasi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['lokasi'] = "<td class='tmp' id='tmp__lokasi'>$d[lokasi]</td>";
 $tampilan['lokasi'] = "<td class='tampilan' id='tampilan__lokasi'>$d[lokasi]</td>";
 
-$edit['kondisi'] = "<td class='td-edit text-center' id='td-edit__kondisi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['kondisi'] = "<td class='editable text-center' id='td-edit__kondisi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['kondisi'] = "<td class='tmp' id='tmp__kondisi'>$d[kondisi]</td>";
 $tampilan['kondisi'] = "<td class='tampilan' id='tampilan__kondisi'>$kondisi_text</td>";
 
-$edit['tarif'] = "<td class='td-edit text-center' id='td-edit__tarif__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['tarif'] = "<td class='editable text-center' id='td-edit__tarif__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['tarif'] = "<td class='tmp' id='tmp__tarif'>$d[tarif]</td>";
 $tampilan['tarif'] = "<td class='tampilan' id='tampilan__tarif'>".number_format($d['tarif'])."/bulan</td>";
 
-$edit['deskripsi'] = "<td class='td-edit text-center' id='td-edit__deskripsi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['deskripsi'] = "<td class='editable text-center' id='td-edit__deskripsi__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['deskripsi'] = "<td class='tmp' id='tmp__deskripsi'>$d[deskripsi]</td>";
 $tampilan['deskripsi'] = "<td class='tampilan' id='tampilan__deskripsi'>$d[deskripsi]</td>";
 
-$edit['fasilitas'] = "<td class='td-edit text-center' id='td-edit__fasilitas__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['fasilitas'] = "<td class='editable text-center' id='td-edit__fasilitas__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['fasilitas'] = "<td class='tmp' id='tmp__fasilitas'>$d[fasilitas]</td>";
 $tampilan['fasilitas'] = "<td class='tampilan' id='tampilan__fasilitas'>$d[fasilitas]</td>";
 
@@ -399,7 +399,7 @@ $tbfas = "
 
 <script>
   $(function(){
-    $(".td-edit").click(function(){
+    $(".editable").click(function(){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[1];
@@ -453,7 +453,7 @@ $tbfas = "
       })
 
 
-    }); // end td-edit
+    }); // end editable
 
     $(".fasilitas").change(function(){
       let tid = $(this).find(":checkbox")[0].id;

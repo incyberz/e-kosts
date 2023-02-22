@@ -22,11 +22,11 @@ while ($d=mysqli_fetch_assoc($q)) {
   $tr .= "
   <tr id=tr__$d[id]>
     <td>$i</td>
-    <td class='td-edit' id='nama_penyewa__$d[id]'>$d[nama_penyewa]</td>
-    <td class='td-edit' id='alamat__$d[id]'>$d[alamat]</td>
-    <td class='td-edit' id='no_wa__$d[id]'>$d[no_wa]</td>
-    <td class='td-edit' id='no_hp__$d[id]'>$d[no_hp]</td>
-    <td class='td-edit' id='no_ktp__$d[id]'>$d[no_ktp]</td>
+    <td class='editable' id='nama_penyewa__$d[id]'>$d[nama_penyewa]</td>
+    <td class='editable' id='alamat__$d[id]'>$d[alamat]</td>
+    <td class='editable' id='no_wa__$d[id]'>$d[no_wa]</td>
+    <td class='editable' id='no_hp__$d[id]'>$d[no_hp]</td>
+    <td class='editable' id='no_ktp__$d[id]'>$d[no_ktp]</td>
     <td>
       <button class='btn btn-danger btn-sm btn_aksi' id='hapus__$d[id]'><i class='bi bi-trash'></i> Hapus</button>
       <a href='?penyewa&id=$d[id]' class='btn btn-info btn-sm'><i class='bi bi-person'></i> Detail</button>
@@ -144,7 +144,7 @@ if($tr==''){
       }
     }) // end btn_aksi
 
-    $(".td-edit").click(function(){
+    $(".editable").click(function(){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[0];

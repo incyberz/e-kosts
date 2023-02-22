@@ -22,7 +22,7 @@ while ($d=mysqli_fetch_assoc($q)) {
   $tr .= "
   <tr id=tr__$d[id]>
     <td>$i</td>
-    <td class='td-edit' id='nama_fasilitas__$d[id]'>$d[nama_fasilitas]</td>
+    <td class='editable' id='nama_fasilitas__$d[id]'>$d[nama_fasilitas]</td>
     <td>$d[sum_pada_kamar]</td>
     <td>$btn_delete</td>
   </tr>
@@ -140,7 +140,7 @@ if($tr==''){
       }
     }) // end btn_aksi
 
-    $(".td-edit").click(function(){
+    $(".editable").click(function(){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[0];

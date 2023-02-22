@@ -89,7 +89,7 @@ if(isset($_POST['clogout'])){
       }
     }) // end btn_aksi
 
-    $(".td-edit").click(function(){
+    $(".editable").click(function(){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[0];

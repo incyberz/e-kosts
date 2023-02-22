@@ -44,8 +44,8 @@
   .judul-tabel{padding:5px; background: linear-gradient(#efc,#cfc); letter-spacing:2px; text-transform: uppercase}
   .tmp{background:yellow !important; display:none}
 
-  .td-edit{ background: linear-gradient(#efe,#cfc); cursor:pointer; transition:.2s}
-  .td-edit:hover{ background: linear-gradient(#fef,#fcf); letter-spacing:1px}
+  .editable{ background: linear-gradient(#efe,#cfc); cursor:pointer; transition:.2s}
+  .editable:hover{ background: linear-gradient(#fef,#fcf); letter-spacing:1px}
   .fasilitas{color:gray; transition: .2s}
   .fasilitas label{cursor: pointer;}
   .fasilitas:hover{color:darkblue; text-transform: uppercase; letter-spacing: .3px}

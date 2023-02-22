@@ -104,23 +104,23 @@ $ilustrasi_penyewa = "
 </div>
 ";
 
-$edit['nama_penyewa'] = "<td class='td-edit text-center' id='td-edit__nama_penyewa__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['nama_penyewa'] = "<td class='editable text-center' id='td-edit__nama_penyewa__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['nama_penyewa'] = "<td class='tmp' id='tmp__nama_penyewa'>$d[nama_penyewa]</td>";
 $tampilan['nama_penyewa'] = "<td class='tampilan' id='tampilan__nama_penyewa'>$d[nama_penyewa]</td>";
 
-$edit['no_ktp'] = "<td class='td-edit text-center' id='td-edit__no_ktp__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['no_ktp'] = "<td class='editable text-center' id='td-edit__no_ktp__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['no_ktp'] = "<td class='tmp' id='tmp__no_ktp'>$d[no_ktp]</td>";
 $tampilan['no_ktp'] = "<td class='tampilan' id='tampilan__no_ktp'>$d[no_ktp]</td>";
 
-$edit['no_wa'] = "<td class='td-edit text-center' id='td-edit__no_wa__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['no_wa'] = "<td class='editable text-center' id='td-edit__no_wa__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['no_wa'] = "<td class='tmp' id='tmp__no_wa'>$d[no_wa]</td>";
 $tampilan['no_wa'] = "<td class='tampilan' id='tampilan__no_wa'>$d[no_wa]</td>";
 
-$edit['no_hp'] = "<td class='td-edit text-center' id='td-edit__no_hp__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['no_hp'] = "<td class='editable text-center' id='td-edit__no_hp__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['no_hp'] = "<td class='tmp' id='tmp__no_hp'>$d[no_hp]</td>";
 $tampilan['no_hp'] = "<td class='tampilan' id='tampilan__no_hp'>$d[no_hp]</td>";
 
-$edit['alamat'] = "<td class='td-edit text-center' id='td-edit__alamat__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
+$edit['alamat'] = "<td class='editable text-center' id='td-edit__alamat__$d[id]'><i class='bi bi-pencil'> edit</i></td>";
 $tmp['alamat'] = "<td class='tmp' id='tmp__alamat'>$d[alamat]</td>";
 $tampilan['alamat'] = "<td class='tampilan' id='tampilan__alamat'>$d[alamat]</td>";
 
@@ -222,7 +222,7 @@ $tbpenyewa = "
 
 <script>
   $(function(){
-    $(".td-edit").click(function(){
+    $(".editable").click(function(){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[1];

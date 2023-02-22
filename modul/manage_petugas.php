@@ -22,7 +22,7 @@ while ($d=mysqli_fetch_assoc($q)) {
   $i++;
   $role_show = $d['role']==1 ? 'Admin' : '-';
   // echo "is_punya_trx==$d[is_punya_trx]<br>";
-  $td_edit = $d['is_punya_trx'] ? '' : 'td-edit';
+  $td_edit = $d['is_punya_trx'] ? '' : 'editable';
   $btn_hapus = $cusername==$d['username'] ? '' : "<button class='btn btn-danger btn-sm btn_aksi' id='hapus__$d[username]'><i class='bi bi-trash'></i> Hapus</button>";
 
   $ubah_password = "<button class='btn btn-info btn-sm btn_aksi' id='ubah_password__$d[username]'><i class='bi bi-pencil'></i> Ubah Password</button>";
@@ -38,9 +38,9 @@ while ($d=mysqli_fetch_assoc($q)) {
   <tr id=tr__$d[username]>
     <td>$i</td>
     <td>$link_img_profile</td>
-    <td class='td-edit' id='nama_petugas__$d[username]'>$d[nama_petugas]</td>
-    <td class='td-edit' id='alamat__$d[username]'>$d[alamat]</td>
-    <td class='td-edit' id='no_wa__$d[username]'>$d[no_wa]</td>
+    <td class='editable' id='nama_petugas__$d[username]'>$d[nama_petugas]</td>
+    <td class='editable' id='alamat__$d[username]'>$d[alamat]</td>
+    <td class='editable' id='no_wa__$d[username]'>$d[no_wa]</td>
     <td class='$td_edit' id='username__$d[username]'>$d[username]</td>
     <td class='' id='role__$d[username]'>$role_show</td>
     <td>$btn_hapus $ubah_password</td>
@@ -187,7 +187,7 @@ if($tr==''){
       }
     }) // end btn_aksi
 
-    $(".td-edit").click(function(){
+    $(".editable").click(function(){
       let tid = $(this).prop('id');
       let rid = tid.split('__');
       let kolom = rid[0];
